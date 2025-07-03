@@ -96,7 +96,7 @@ export const Navbar = () => {
 
         {/* Capa oscura */}
        <div className="absolute inset-0 bg-gray-900/80" />
-      <div className="absolute inset-0 bg-[url('@/public/media/patterns/noise.webp')] opacity-30 mix-blend-overlay pointer-events-none" />
+       <div className="absolute inset-0 bg-[url('/media/patterns/noise.webp')] opacity-30 mix-blend-overlay pointer-events-none" />
 
 
         {/* Contenido del menú */}
