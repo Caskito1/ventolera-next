@@ -8,7 +8,7 @@ export const About2 = () => {
 
   return (
 
-    <section className="bg-white py-16 h-[100vh] flex justify-center items-center">
+    <section className="bg-white py-16 min-h-[100vh] flex justify-center items-center">
       <div className="max-w-6xl mx-auto px-4 grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
         {/* Imagen */}
         <div className="group relative overflow-hidden rounded-xl shadow-lg  ">
