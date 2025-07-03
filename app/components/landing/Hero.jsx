@@ -3,7 +3,7 @@
     return (
       <section className="relative flex items-center justify-center w-full h-screen">
         <video
-          src="/media/VentoleraBackground.mp4"
+          src="/media/background-video.mp4"
           muted
           loop
           autoPlay
