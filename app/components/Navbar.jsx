@@ -9,10 +9,11 @@ import bgEscuchanos from "@/public/media/navbar/bg-cooperativa.webp";
 import bgContacto from "@/public/media/navbar/bg-escuchanos.webp";
 
 const menuItems = [
-  { label: "Quienes somos", bg: bgQuienesSomos },
-  { label: "Cooperativa", bg: bgCooperativa },
-  { label: "Escuchanos", bg: bgEscuchanos },
-  { label: "Contacto", bg: bgContacto },
+   { label: "Quienes somos", id: "quienes-somos", bg: bgQuienesSomos },
+   { label: "Escuchanos", id: "escuchanos", bg: bgEscuchanos },
+   { label: "Audiovisuales", id: "audiovisuales", bg: bgEscuchanos },
+   { label: "Cooperativa", id: "cooperativa", bg: bgCooperativa },
+   { label: "Contacto", id: "contacto", bg: bgContacto },
 ];
 
 export const Navbar = () => {
@@ -102,15 +103,23 @@ export const Navbar = () => {
         {/* Contenido del menú */}
         <div className="relative z-50 h-full flex flex-col justify-center pl-10 text-white space-y-6">
           {menuItems.map((item) => (
-            <div
-              key={item.label}
-              onMouseEnter={() => setHoveredItem(item)}
-              onMouseLeave={() => setHoveredItem(null)}
-              className="text-3xl font-light tracking-widest hover:tracking-[0.4em] transition-all duration-500 cursor-pointer"
-            >
-              {item.label}
-            </div>
-          ))}
+  <div
+    key={item.label}
+    onMouseEnter={() => setHoveredItem(item)}
+    onMouseLeave={() => setHoveredItem(null)}
+    onClick={() => {
+      const section = document.getElementById(item.id);
+      if (section) {
+        section.scrollIntoView({ behavior: "smooth" });
+      }
+      setMenuOpen(false);
+    }}
+    className="text-3xl font-light tracking-widest hover:tracking-[0.4em] transition-all duration-500 cursor-pointer"
+  >
+    {item.label}
+  </div>
+))}
+        
 
           {/* Botón cerrar */}
           <button

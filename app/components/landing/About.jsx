@@ -38,7 +38,7 @@ export const About = () => {
   };
 
   return (
-    <section className="py-16 px-4 text-center bg-white">
+    <section id='quienes-somos' className="py-16 px-4 text-center bg-white">
       <h2 className="text-4xl font-bold mb-12">Quiénes Somos</h2>
       <div className="max-w-[1600px] mx-auto flex h-[400px] overflow-hidden rounded-xl">
         {cards.map((card, index) => {

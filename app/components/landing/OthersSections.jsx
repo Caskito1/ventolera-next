@@ -5,7 +5,7 @@ export const OthersSections = () => {
   const [active, setActive] = useState('escuela')
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center text-white px-4 py-16">
+    <section id="cooperativa" className="relative min-h-screen flex items-center justify-center text-white px-4 py-16">
       {/* Fondo con efecto parallax aislado */}
       <div className="absolute inset-0 -z-10">
         <div
