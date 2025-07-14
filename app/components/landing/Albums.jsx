@@ -2,32 +2,43 @@
 "use client";
 
 
+
 const albums = [
   {
     src: "/media/albums/La Ventolera Candombe.webp",
     alt: "La Ventolera Candombe",
+    link: 'https://open.spotify.com/intl-es/album/1ki4ZcTVLvXOdgMEXNyBuv?si=T-TJaXAQR9uC_Q-AbD6Zng',
   },
   {
     src: "/media/albums/Sabandija.webp",
     alt: "Sabandija",
+    link: 'https://open.spotify.com/intl-es/album/5yQrUigZPadsQ3n96m32Oz?si=GICDKt6ARpa2nq6D5s4aqw',
   },
   {
     src: "/media/albums/SimplesMortales.webp",
     alt: "Simples Mortales",
+    link: 'https://open.spotify.com/intl-es/album/369r9epbzChKt2axZ5NSuB?si=weGiKlhVRDqpxj9pjiHrxw',
   },
   {
     src: "/media/albums/EnganchadoCeleste.webp",
     alt: "Enganchado Celeste",
+    link: 'https://open.spotify.com/intl-es/album/2YhM6rdQZCUm4j2W0SSYCq?si=caD0g48OQke07tCyYjaiOQ',
   },
 ];
 
 export const Albums = () => {
+
+  
   return (
     <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mt-10">
       {albums.map((album, index) => (
-        <div
+        <a
           key={index}
           className="relative group overflow-hidden rounded-lg shadow-lg cursor-pointer"
+          href={album.link}
+          target="_blank"
+          rel="noopener noreferrer"
+         
         >
           <img
             src={album.src}
@@ -37,7 +48,7 @@ export const Albums = () => {
           <div className="absolute inset-0 bg-black bg-opacity-60 opacity-0 group-hover:opacity-80 transition-opacity duration-300 flex items-center justify-center text-center p-4">
             <p className="text-white font-semibold">{album.alt}</p>
           </div>
-        </div>
+        </a>
       ))}
     </div>
   );
