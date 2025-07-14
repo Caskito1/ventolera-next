@@ -6,8 +6,9 @@ export const Platforms = () => {
       <h4 className="text-lg font-semibold mr-4">Otras plataformas:</h4>
       <div className="flex justify-center gap-8 ">
         <a
-          href="#"
+          href="https://www.youtube.com/@LaVentoleraCandombe"
           className="transition-transform duration-300 hover:scale-110"
+          target="_blank"
         >
           <img
             src="/media/icons/youtube.webp"
@@ -16,8 +17,9 @@ export const Platforms = () => {
           />
         </a>
         <a
-          href="#"
+          href="https://laventoleracandombe.bandcamp.com/"
           className="transition-transform duration-300 hover:scale-110"
+          target="_blank"
         >
           <img
             src="/media/icons/bandcamp.webp"
