@@ -16,7 +16,7 @@ export default function EscuelaPage() {
     <>
       <Navbar />
       <HeaderPage
-        title="Nuestra Escuela"
+        title="Nuestra Escuelaa"
         subtitle="Formación, comunidad y conocimiento"
         backgroundImage={bgEscuchanos}
       />
