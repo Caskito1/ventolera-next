@@ -20,7 +20,7 @@ export const SocialBar = () => {
   return (
     <>
       {/* Desktop vertical bar */}
-      <div className="hidden md:flex fixed top-1/2 right-0 transform -translate-y-1/2 flex-col items-center space-y-3 p-10 z-50">
+      <div className="hidden md:flex fixed top-1/2 right-0 transform -translate-y-1/2 flex-col items-center space-y-8 p-10 z-50">
         {items.map(({ href, icon, alt }) => (
           <a key={alt} href={href} target="_blank" rel="noopener noreferrer">
             <Image

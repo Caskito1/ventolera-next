@@ -5,16 +5,16 @@ import logo from "@/public/media/LogoVentolera.png";
 import bgDefault from "@/public/media/navbar/bg-default.webp";
 import bgQuienesSomos from "@/public/media/navbar/quienes-somos.webp";
 import bgCooperativa from "@/public/media/navbar/cooperativa.webp";
-import bgEscuchanos from "@/public/media/navbar/bg-cooperativa.webp";
-import bgContacto from "@/public/media/navbar/bg-escuchanos.webp";
+import bgEscuchanos from "@/public/media/gallery/vento18.webp";
+import bgContacto from "@/public/media/gallery/vento22.webp";
 import { useRouter } from "next/navigation";
 import { SocialBar } from './SocialBar';
 
 const menuItems = [
    { label: "Quienes somos", id: "quienes-somos", bg: bgQuienesSomos },
    { label: "Escuchanos", id: "escuchanos", bg: bgEscuchanos },
-   { label: "Audiovisuales", id: "audiovisuales", bg: bgEscuchanos },
-   { label: "Cooperativa", id: "cooperativa", bg: bgCooperativa },
+   { label: "Audiovisuales", id: "audiovisuales", bg: bgCooperativa },
+   { label: "Cooperativa", id: "cooperativa", bg: bgContacto },
   //  { label: "Contacto", id: "contacto", bg: bgContacto },
 ];
 
