@@ -17,7 +17,7 @@ export default function InfoSection({ imagesInfoSection }) {
         {/* Columna de texto */}
         <div className="space-y-4 text-gray-800 text-base leading-relaxed">
           <h2 className="text-2xl font-bold text-center md:text-left">
-            Escuela de Música Popular La Ventolera
+            Eeeescuela de Música Popular La Ventolera
           </h2>
           <p>
             <strong>Aulas Ventoleras</strong> son espacios de aprendizaje músico–socio–culturales donde se comparten saberes en torno a la Música Popular Uruguaya, con énfasis en instrumentos de viento y percusión. Se parte del Candombe y los ritmos afroamericanos como eje central.
