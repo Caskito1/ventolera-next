@@ -10,13 +10,13 @@ import email from '@/public/media/icons/mail.webp'
 
 
 const contacLinks = [ 
-  {href: '+59899178570', icon: phoneNumber, alt:'Phone', text:'+598 99 178 570'},
+  {href: 'tel:+59899178570', icon: phoneNumber, alt:'Phone', text:'+598 99 178 570'},
   {href: 'mailto:laventoleracandombe@gmail.com', icon: email, alt:'Email', text:'laventoleracandombe@gmail.com'}
 ]
 const socialLinks = [
   { href: 'https://www.instagram.com/laventoleracandombe/', icon: instagramIcon, alt: 'Instagram' },
   { href: 'https://www.facebook.com/laventoleracandombe', icon: facebookIcon, alt: 'Facebook' },
-  { href: 'https://open.spotify.com/intl-es/artist/...', icon: spotifyIcon, alt: 'Spotify' },
+  { href: 'https://open.spotify.com/intl-es/artist/5hgeze6GTe8ckpSfdx3A5l?si=Ek-UhQZATOekLZiRwOnMUw', icon: spotifyIcon, alt: 'Spotify' },
   { href: 'https://www.youtube.com/@LaVentoleraCandombe', icon: youtubeIcon, alt: 'YouTube' },
 ];
 
@@ -28,7 +28,7 @@ export const Footer = () => {
         <div className="flex flex-col items-center md:items-start">
           <Image src={logo} alt="Logo Ventolera" width={200} height={100} className="mb-4" />
           <div className="flex flex-col items-center md:items-start text-sm">
-              <div className="flex flex-col  mb-1 ">
+              <div className="flex flex-col md:items-start items-center  mb-1 ">
             {contacLinks.map(({href, icon, alt, text}) => (
                 <a  key={alt} href={href} target="_blank" rel="noopener noreferrer"  className='flex items-center hover:scale-110 transition-transform'>
              <Image src={icon} 

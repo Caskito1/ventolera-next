@@ -118,14 +118,14 @@ const sliderRef = useRef(null);
         ) : (
          // Desktop: tabs
 <div className="flex flex-col gap-6 ">
- {/* Tabs */} 
+{/* Tabs */} 
 <div className="flex w-full gap-6">
   {data.map((item, idx) => (
     <motion.div
       key={item.id}
       onClick={() => setActive(item.id)}
-      initial={{ opacity: 0, x: item.id === 1 ? -100 : 100 }}
-      animate={{ opacity: 1, x: 0 }}
+      initial={{ opacity: 0, y: 50 }}
+      animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, ease: "easeOut", delay: idx * 0.1 }}
       className={`flex-1 cursor-pointer p-6 text-left transition border-b-4 rounded-xl ${
         active === item.id
@@ -139,41 +139,40 @@ const sliderRef = useRef(null);
   ))}
 </div>
 
-  {/* Card activa */}
-  
-  {data.map(
-    (item) =>
-      item.id === active && (
-         <motion.div
-           key={item.id}
+{/* Card activa */}
+{data.map(
+  (item) =>
+    item.id === active && (
+      <motion.div
+        key={item.id}
         initial={{ opacity: 0, y: 50 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, ease: "easeOut" }}
         className="flex w-full bg-white/10 p-6 rounded-xl backdrop-blur-sm gap-6"
-        >
-          {/* Texto */}
-          <div className="w-1/2">
-            <h3 className="text-2xl font-bold mb-2">{item.title}</h3>
-            <p className="mb-4">{item.text}</p>
-            <a
-              href={item.cta.url}
-              target="_blank"
-              className="inline-block bg-white text-black px-4 py-2 rounded hover:bg-gray-200 transition"
-            >
-              {item.cta.label}
-            </a>
-          </div>
-          {/* Imagen */}
-          <div className="w-1/2">
-            <img
-              src={item.img}
-              alt={item.title}
-              className="rounded-xl w-full h-[300px] object-cover shadow-lg"
-            />
-          </div>
-        </motion.div>
-      )
-  )}
+      >
+        {/* Texto */}
+        <div className="w-1/2">
+          <h3 className="text-2xl font-bold mb-2">{item.title}</h3>
+          <p className="mb-4">{item.text}</p>
+          <a
+            href={item.cta.url}
+            target="_blank"
+            className="inline-block bg-white text-black px-4 py-2 rounded hover:bg-gray-200 transition"
+          >
+            {item.cta.label}
+          </a>
+        </div>
+        {/* Imagen */}
+        <div className="w-1/2">
+          <img
+            src={item.img}
+            alt={item.title}
+            className="rounded-xl w-full h-[300px] object-cover shadow-lg"
+          />
+        </div>
+      </motion.div>
+    )
+)}
 
 </div>
         )}

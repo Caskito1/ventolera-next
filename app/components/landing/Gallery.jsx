@@ -6,7 +6,7 @@ import GallerySlider from './GallerySlider';
 
 export const Gallery = () =>  {
   return (
-    <section className='bg-white p-16'>
+    <section className='bg-white md:p-16 p-2'>
      
       <GallerySlider />
     </section>
