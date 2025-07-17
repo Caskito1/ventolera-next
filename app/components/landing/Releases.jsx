@@ -36,7 +36,7 @@ export const Releases = () => {
         </motion.p>
 
         <motion.div
-          className="w-full max-w-xl h-[20rem] mt-6 rounded-xl overflow-hidden relative"
+          className="w-full max-w-3xl mt-6 rounded-xl overflow-hidden relative aspect-[16/9]"
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           transition={{ delay: 0.6, duration: 0.6 }}
