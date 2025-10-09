@@ -18,7 +18,7 @@ export function usePartituras(subroles) {
           ...doc.data(),
         }));
 
-        // Si el usuario tiene subroles, filtramos solo esas
+        // Si el usuario tiene subroles, filtramos solo esa
         const filtered = subroles?.length
           ? all.filter((p) => subroles.includes(p.instrumento))
           : all;
