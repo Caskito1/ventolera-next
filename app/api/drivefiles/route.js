@@ -10,17 +10,36 @@ const INSTRUMENT_FOLDER_IDS = {
   "tuba": "1TNm8cuKErsg4aRKRdyc1WV9qPOYLys9l",
 };
 
+// Cache simple en memoria del access_token
+let cachedAccessToken = null;
+let tokenExpiry = 0;
+
 export async function GET(req) {
   try {
-    const refresh_token = process.env.GOOGLE_REFRESH_TOKEN;
-    const client_id = process.env.GOOGLE_CLIENT_ID;
-    const client_secret = process.env.GOOGLE_CLIENT_SECRET;
+    const { GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, GOOGLE_REFRESH_TOKEN } = process.env;
 
-    const oauth2Client = new google.auth.OAuth2(client_id, client_secret);
-    oauth2Client.setCredentials({ refresh_token });
+    if (!GOOGLE_CLIENT_ID || !GOOGLE_CLIENT_SECRET || !GOOGLE_REFRESH_TOKEN) {
+      return new Response(JSON.stringify({ error: "Faltan variables de entorno de Google." }), { status: 500 });
+    }
+
+    const oauth2Client = new google.auth.OAuth2(GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET);
+    oauth2Client.setCredentials({ refresh_token: GOOGLE_REFRESH_TOKEN });
+
+    // Renovar access_token solo si expiró o no hay cache
+    const now = Date.now();
+    if (!cachedAccessToken || now >= tokenExpiry) {
+      try {
+        const tokenResponse = await oauth2Client.getAccessToken();
+        if (!tokenResponse?.token) throw new Error("No se pudo renovar el access_token");
+        cachedAccessToken = tokenResponse.token;
+        tokenExpiry = now + 50 * 60 * 1000; // renovar antes de 1 hora (50 min)
+      } catch (err) {
+        console.error("💥 Error renovando access_token:", err);
+        return new Response(JSON.stringify({ error: "Error al renovar access_token. Verificar refresh_token." }), { status: 401 });
+      }
+    }
 
     const drive = google.drive({ version: "v3", auth: oauth2Client });
-
     const { searchParams } = new URL(req.url);
     const instrumento = searchParams.get("instrumento");
 
@@ -30,7 +49,6 @@ export async function GET(req) {
 
     const instrumentoFolderId = INSTRUMENT_FOLDER_IDS[instrumento];
 
-    // Listar PDFs dentro de la carpeta
     const resFiles = await drive.files.list({
       q: `'${instrumentoFolderId}' in parents and mimeType='application/pdf'`,
       fields: "files(id, name, webViewLink)",
@@ -39,6 +57,7 @@ export async function GET(req) {
 
     return new Response(JSON.stringify(resFiles.data.files), { status: 200 });
   } catch (error) {
+    console.error("💥 Error en /api/drivefiles:", error);
     return new Response(JSON.stringify({ error: error.message }), { status: 500 });
   }
 }

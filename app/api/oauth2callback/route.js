@@ -15,17 +15,15 @@ export async function GET(req) {
       process.env.GOOGLE_REDIRECT_URI
     );
 
-    // Intercambiar el code por tokens
     const { tokens } = await oauth2Client.getToken(code);
     oauth2Client.setCredentials(tokens);
 
-    console.log("✅ Tokens recibidos:", tokens);
+    // Mostrar tokens en pantalla para copiar el refresh_token
+    return new Response(JSON.stringify(tokens, null, 2), {
+      status: 200,
+      headers: { "Content-Type": "application/json" },
+    });
 
-    // TODO: acá guardar tokens.refresh_token en tu DB/Firebase
-    // porque access_token expira en 1h, pero refresh_token sirve para renovarlo
-
-    // Redirigimos a tu dashboard (o donde quieras en el frontend)
-    return Response.redirect("http://localhost:3000/dashboard");
   } catch (err) {
     console.error("❌ Error en oauth2callback:", err);
     return new Response("OAuth2 error", { status: 500 });
