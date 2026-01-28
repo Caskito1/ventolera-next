@@ -5,22 +5,26 @@ import logo from "@/public/media/LogoVentolera.png";
 import bgDefault from "@/public/media/navbar/bg-default.webp";
 import bgQuienesSomos from "@/public/media/navbar/quienes-somos.webp";
 import bgCooperativa from "@/public/media/navbar/cooperativa.webp";
-import bgEscuchanos from "@/public/media/navbar/bg-cooperativa.webp";
-import bgContacto from "@/public/media/navbar/bg-escuchanos.webp";
+import bgEscuchanos from "@/public/media/gallery/vento18.webp";
+import bgContacto from "@/public/media/gallery/vento22.webp";
+import { useRouter } from "next/navigation";
+import { SocialBar } from './SocialBar';
 
 const menuItems = [
    { label: "Quienes somos", id: "quienes-somos", bg: bgQuienesSomos },
    { label: "Escuchanos", id: "escuchanos", bg: bgEscuchanos },
-   { label: "Audiovisuales", id: "audiovisuales", bg: bgEscuchanos },
-   { label: "Cooperativa", id: "cooperativa", bg: bgCooperativa },
-   { label: "Contacto", id: "contacto", bg: bgContacto },
+   { label: "Audiovisuales", id: "audiovisuales", bg: bgCooperativa },
+   { label: "Cooperativa", id: "cooperativa", bg: bgContacto },
+  //  { label: "Contacto", id: "contacto", bg: bgContacto },
 ];
 
 export const Navbar = () => {
+  
   const [isScrolled, setIsScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [hoveredItem, setHoveredItem] = useState(null);
   
+ const router = useRouter();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -94,6 +98,7 @@ export const Navbar = () => {
     />
   ))}
 </div>
+ 
 
         {/* Capa oscura */}
        <div className="absolute inset-0 bg-gray-900/80" />
@@ -107,13 +112,18 @@ export const Navbar = () => {
     key={item.label}
     onMouseEnter={() => setHoveredItem(item)}
     onMouseLeave={() => setHoveredItem(null)}
-    onClick={() => {
-      const section = document.getElementById(item.id);
-      if (section) {
-        section.scrollIntoView({ behavior: "smooth" });
-      }
-      setMenuOpen(false);
-    }}
+onClick={() => {
+  setMenuOpen(false);
+
+  if (window.location.pathname !== "/") {
+    router.push(`/#${item.id}`);
+  } else {
+    const section = document.getElementById(item.id);
+    if (section) {
+      section.scrollIntoView({ behavior: "smooth" });
+    }
+  }
+}}
     className="text-3xl font-light tracking-widest hover:tracking-[0.4em] transition-all duration-500 cursor-pointer"
   >
     {item.label}
@@ -129,7 +139,11 @@ export const Navbar = () => {
             ×
           </button>
         </div>
+         {/* Barra social fija */}
+        <SocialBar />
       </div>
+      
+     
     </>
   );
 };
