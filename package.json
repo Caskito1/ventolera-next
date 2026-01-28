@@ -17,12 +17,8 @@
     "firebase-admin": "^13.5.0",
     "formidable": "^3.5.4",
     "framer-motion": "^12.23.3",
-<<<<<<< HEAD
     "googleapis": "^159.0.0",
     "next": "^16.1.6",
-=======
-    "next": "15.3.8",
->>>>>>> e0c18168cbd4cd87eb942e29848898d5b97aabdd
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-icons": "^5.5.0",
