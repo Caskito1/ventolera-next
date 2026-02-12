@@ -84,28 +84,50 @@ export default function PartiturasTab({ userData, favorites, setFavorites }) {
         <p>No hay partituras disponibles.</p>
       ) : (
         <ul className="space-y-2">
-          {filteredPDFs.map((p) => (
-            <li
-              key={p.id}
-              className="flex justify-between items-center border p-2 rounded"
+  {filteredPDFs.map((p) => {
+    const isAvailable = !!p.driveFileId;
+
+    return (
+      <li
+        key={p.id}
+        className={`flex justify-between items-center border p-3 rounded transition
+          ${isAvailable ? "bg-white" : "bg-gray-100 opacity-60"}
+        `}
+      >
+        <span className={`${!isAvailable && "text-gray-500"}`}>
+          {p.tema} ({p.instrumento})
+        </span>
+
+        <div className="flex gap-3 items-center">
+
+          {/* ⭐ FAVORITO */}
+          <button
+            onClick={() => toggleFavorite(p.id, p.tema)}
+            disabled={!isAvailable}
+            className={`${!isAvailable && "cursor-not-allowed opacity-50"}`}
+          >
+            {favorites.includes(p.id) ? "⭐" : "☆"}
+          </button>
+
+          {/* ⬇ DESCARGA */}
+          {isAvailable ? (
+            <a
+              href={`/api/downloadpdf?fileId=${p.driveFileId}&download=1`}
+              className="flex items-center gap-1 text-blue-600 hover:text-blue-800"
             >
-              <span>
-                {p.tema} ({p.instrumento})
-              </span>
-              <div className="flex gap-2 items-center">
-                <button onClick={() => toggleFavorite(p.id, p.tema)}>
-                  {favorites.includes(p.id) ? "⭐" : "☆"}
-                </button>
-                <a href={`/api/downloadpdf?fileId=${p.driveFileId}`} target="_blank">
-  Leer
-</a>
-           <a href={`/api/downloadpdf?fileId=${p.driveFileId}&download=1`}>
-  Descargar
-</a>
-              </div>
-            </li>
-          ))}
-        </ul>
+              ⬇
+            </a>
+          ) : (
+            <div className="flex items-center gap-1 text-gray-400 cursor-not-allowed">
+              ⛔
+            </div>
+          )}
+        </div>
+      </li>
+    );
+  })}
+</ul>
+
       )}
     </>
   );
