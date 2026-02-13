@@ -11,7 +11,13 @@ export default function PartiturasTab({ userData, favorites, setFavorites }) {
   const [selectedInstrument, setSelectedInstrument] = useState("todos");
 
   const toggleFavorite = async (pdfId, pdfName) => {
-    const favRef = doc(db, "usuarios", auth.currentUser.uid, "favoritos", pdfId);
+    const favRef = doc(
+      db,
+      "usuarios",
+      auth.currentUser.uid,
+      "favoritos",
+      pdfId,
+    );
 
     if (favorites.includes(pdfId)) {
       await deleteDoc(favRef);
@@ -26,7 +32,9 @@ export default function PartiturasTab({ userData, favorites, setFavorites }) {
     .filter((p) => p.tema.toLowerCase().includes(searchTerm.toLowerCase()))
     .filter((p) => (showFavorites ? favorites.includes(p.id) : true))
     .filter((p) =>
-      selectedInstrument === "todos" ? true : p.instrumento === selectedInstrument
+      selectedInstrument === "todos"
+        ? true
+        : p.instrumento === selectedInstrument,
     );
 
   return (
@@ -84,50 +92,52 @@ export default function PartiturasTab({ userData, favorites, setFavorites }) {
         <p>No hay partituras disponibles.</p>
       ) : (
         <ul className="space-y-2">
-  {filteredPDFs.map((p) => {
-    const isAvailable = !!p.driveFileId;
+          {filteredPDFs.map((p) => {
+            const isAvailable = !!p.driveFileId;
 
-    return (
-      <li
-        key={p.id}
-        className={`flex justify-between items-center border p-3 rounded transition
+            return (
+              <li
+                key={p.id}
+                className={`flex justify-between items-center border p-3 rounded transition
           ${isAvailable ? "bg-white" : "bg-gray-100 opacity-60"}
         `}
-      >
-        <span className={`${!isAvailable && "text-gray-500"}`}>
-          {p.tema} ({p.instrumento})
-        </span>
+              >
+                <span className={`${!isAvailable && "text-gray-500"}`}>
+                  {p.tema} ({p.instrumento})
+                </span>
 
-        <div className="flex gap-3 items-center">
+                <div className="flex gap-3 items-center">
+                  {/* ⭐ FAVORITO */}
+                  <button
+                    onClick={() => toggleFavorite(p.id, p.tema)}
+                    disabled={!isAvailable}
+                    className={`${!isAvailable && "cursor-not-allowed opacity-50"}`}
+                  >
+                    {favorites.includes(p.id) ? (
+                      <img src="/media/icons/star-yellow.webp" alt="Star Selected" height={16} width={16} />
+                    ) : (
+                      <img src="/media/icons/star.webp" alt="Star empty" height={16} width={16} />
+                    )}
+                  </button>
 
-          {/* ⭐ FAVORITO */}
-          <button
-            onClick={() => toggleFavorite(p.id, p.tema)}
-            disabled={!isAvailable}
-            className={`${!isAvailable && "cursor-not-allowed opacity-50"}`}
-          >
-            {favorites.includes(p.id) ? "⭐" : "☆"}
-          </button>
-
-          {/* ⬇ DESCARGA */}
-          {isAvailable ? (
-            <a
-              href={`/api/downloadpdf?fileId=${p.driveFileId}&download=1`}
-              className="flex items-center gap-1 text-blue-600 hover:text-blue-800"
-            >
-              ⬇
-            </a>
-          ) : (
-            <div className="flex items-center gap-1 text-gray-400 cursor-not-allowed">
-              ⛔
-            </div>
-          )}
-        </div>
-      </li>
-    );
-  })}
-</ul>
-
+                  {/* ⬇ DESCARGA */}
+                  {isAvailable ? (
+                    <a
+                      href={`/api/downloadpdf?fileId=${p.driveFileId}&download=1`}
+                      className="flex items-center gap-1 text-blue-600 hover:text-blue-800"
+                    >
+                      <img src="/media/icons/download.webp" alt="Star Selected" height={20} width={20} />
+                    </a>
+                  ) : (
+                    <div className="flex items-center gap-1 text-gray-400 cursor-not-allowed">
+                        <img src="/media/icons/block.webp" alt="Star Selected" height={16} width={16} />
+                    </div>
+                  )}
+                </div>
+              </li>
+            );
+          })}
+        </ul>
       )}
     </>
   );

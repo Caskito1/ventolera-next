@@ -41,7 +41,7 @@ export default function DashboardPage() {
         <button onClick={() => setMenuOpen(true)} className="text-2xl">
           ☰
         </button>
-        <span className="font-semibold">Dashboard</span>
+        <span className="font-black">VENTOAPP</span>
       </header>
 
       {/* ================= OVERLAY MOBILE ================= */}
@@ -52,62 +52,75 @@ export default function DashboardPage() {
         />
       )}
 
-      {/* ================= SIDEBAR ================= */}
-      <aside
-        className={`
-          fixed z-30 top-0 left-0 h-full w-64 p-4 shadow flex flex-col
-          transform transition-transform duration-300
-          ${menuOpen ? "translate-x-0" : "-translate-x-full"}
-          lg:translate-x-0
-          bg-white text-gray-900
-          lg:bg-white/20 lg:text-white lg:backdrop-blur-md
-          lg:top-6 lg:left-6
-          lg:h-[calc(100vh-3rem)]
-          lg:rounded-lg
-        `}
+    
+   {/* ================= SIDEBAR ================= */}
+<aside
+  className={`
+    fixed z-30 top-0 left-0 h-screen w-64 p-4 shadow flex flex-col
+    transform transition-transform duration-300
+    ${menuOpen ? "translate-x-0" : "-translate-x-full"}
+    lg:translate-x-0
+    bg-white text-gray-900
+    lg:bg-white/20 lg:text-white lg:backdrop-blur-md
+  `}
+>
+  {/* BOTÓN CERRAR (solo mobile) */}
+  <button
+    onClick={() => setMenuOpen(false)}
+    className="absolute top-5 right-4 lg:hidden"
+  >
+    <img
+      src="/media/icons/close.webp"
+      alt="Cerrar menú"
+      height={16}
+      width={16}
+    />
+  </button>
+
+  <h2 className="text-xl font-bold mb-2">{userData.nombre}</h2>
+  <p className="text-sm mb-4">{userData.rol}</p>
+
+  <div className="flex flex-col gap-2 mb-4">
+    <button
+      className={`py-2 px-3 rounded transition-all ${
+        selectedTab === "partituras"
+          ? "bg-orange-500/80 text-white font-semibold shadow-md"
+          : "bg-white text-gray-700"
+      }`}
+      onClick={() => {
+        setSelectedTab("partituras");
+        setMenuOpen(false);
+      }}
+    >
+      Partituras
+    </button>
+
+    {userData.rol === "admin" && (
+      <button
+        className={`py-2 px-3 rounded transition-all ${
+          selectedTab === "administracion"
+            ? "bg-orange-500/80 text-white font-semibold shadow-md"
+            : "bg-white text-gray-700"
+        }`}
+        onClick={() => {
+          setSelectedTab("administracion");
+          setMenuOpen(false);
+        }}
       >
-        <h2 className="text-xl font-bold mb-2">{userData.nombre}</h2>
-        <p className="text-sm mb-4">{userData.rol}</p>
+        Administración
+      </button>
+    )}
+  </div>
 
-        <div className="flex flex-col gap-2 mb-4">
-          <button
-            className={`py-2 px-3 rounded transition-all ${
-              selectedTab === "partituras"
-                ? "bg-orange-500/80 text-white font-semibold shadow-md"
-                : "bg-white text-gray-700"
-            }`}
-            onClick={() => {
-              setSelectedTab("partituras");
-              setMenuOpen(false);
-            }}
-          >
-            Partituras
-          </button>
+  <button
+    onClick={handleLogout}
+    className="mt-auto py-2 px-3 bg-red-500 text-white rounded hover:bg-red-600 transition"
+  >
+    Cerrar sesión
+  </button>
+</aside>
 
-          {userData.rol === "admin" && (
-            <button
-              className={`py-2 px-3 rounded transition-all ${
-                selectedTab === "administracion"
-                  ? "bg-orange-500/80 text-white font-semibold shadow-md"
-                  : "bg-white text-gray-700"
-              }`}
-              onClick={() => {
-                setSelectedTab("administracion");
-                setMenuOpen(false);
-              }}
-            >
-              Administración
-            </button>
-          )}
-        </div>
 
-        <button
-          onClick={handleLogout}
-          className="mt-auto py-2 px-3 bg-red-500 text-white rounded hover:bg-red-600 transition"
-        >
-          Cerrar sesión
-        </button>
-      </aside>
 
       {/* ================= CONTENIDO ================= */}
       <main
