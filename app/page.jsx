@@ -4,6 +4,7 @@ import { About } from "./components/landing/About";
 import About2 from "./components/landing/About copy";
 
 import { Gallery } from "./components/landing/Gallery";
+import HeaderAlbum from "./components/landing/HeaderAlbum";
 import { Hero } from "./components/landing/Hero";
 import { Listen } from "./components/landing/Listen";
 import { OthersSections } from "./components/landing/OthersSections";
@@ -29,7 +30,8 @@ export default function Home() {
   return (
     <div className="w-full">
       <Navbar />
-      <Hero />
+      <HeaderAlbum />
+      {/* <Hero /> */}
       {/* <About /> */}
       <About2 />
       <Listen />

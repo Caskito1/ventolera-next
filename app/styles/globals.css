@@ -27,3 +27,60 @@ body {
   color: var(--foreground);
   font-family: var(--font-montserrat);
 }
+
+
+@keyframes softHeartBeat {
+  0%   { transform: scale(1); }
+
+  /* Primer golpe */
+  12%  { transform: scale(1.010); }
+  20%  { transform: scale(1); }
+
+  /* Segundo golpe */
+  32%  { transform: scale(1.005); }
+  40%  { transform: scale(1); }
+
+  /* Pausa */
+  100% { transform: scale(1); }
+}
+
+
+
+.bounce-album {
+  animation: softHeartBeat 2.8s ease-in-out infinite;
+}
+
+@keyframes waveBreath {
+  0% {
+    transform: scale(0.9);
+    opacity: 0.4;
+  }
+  60% {
+    transform: scale(1.25);
+    opacity: 0;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+.wave-soft {
+  animation: waveBreath 2.8s ease-out infinite;
+}
+
+.delay-wave {
+  animation-delay: 1.2s;
+}
+@keyframes softHeartShadow {
+  0%   { transform: scaleX(1); opacity: 0.55; }
+
+  12%  { transform: scaleX(1.06); opacity: 0.65; }
+  20%  { transform: scaleX(1); opacity: 0.55; }
+
+  32%  { transform: scaleX(1.04); opacity: 0.6; }
+  40%  { transform: scaleX(1); opacity: 0.55; }
+
+  100% { transform: scaleX(1); opacity: 0.55; }
+}
+
+

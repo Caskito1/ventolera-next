@@ -2,8 +2,8 @@
 
 export const Platforms = () => {
   return (
-    <div className="mt-10 text-center flex justify-center items-center">
-      <h4 className="text-lg font-semibold mr-4">Otras plataformas:</h4>
+    <div className="mt-10 text-center flex flex-col sm:flex-row justify-center items-center gap-4 sm:gap-8">
+      <h4 className="text-lg font-semibold ">Otras plataformas:</h4>
       <div className="flex justify-center gap-8 ">
         <a
           href="https://www.youtube.com/@LaVentoleraCandombe"

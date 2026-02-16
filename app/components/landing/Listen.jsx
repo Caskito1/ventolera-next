@@ -19,8 +19,8 @@ export const Listen = () => {
       </div>
 
       {/* Contenido */}
-      <div className="relative z-10 px-4 max-w-6xl w-full text-center">
-        <h2 className="text-3xl font-bold">ESCUCHANOS</h2>
+      <div className="relative z-10 px-4 w-full text-center max-w-[800px] ">
+        <h2 className="text-2l sm:text-3xl font-bold">ESCUCHANOS</h2>
         <h3 className="text-lg mt-2">Escuchá nuestros discos en Spotify</h3>
 
         <Albums />
