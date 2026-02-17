@@ -41,7 +41,7 @@ export default function PartiturasTab({ userData, favorites, setFavorites }) {
     <>
       <h2 className="text-2xl font-bold mb-4">Partituras</h2>
 
-      {userData.rol === "admin" && (
+      {(userData.rol === "admin" || userData.subrol.length > 1) && (
         <div className="mb-4 flex gap-2 items-center ">
           <label>Elegir instrumento:</label>
           <select

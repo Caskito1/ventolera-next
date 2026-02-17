@@ -21,7 +21,8 @@ export default function DashboardPage() {
   };
 
   if (!userData) return <p className="p-6">Cargando...</p>;
-
+  console.log(userData);
+  
   return (
     <div className="min-h-screen relative">
       {/* ================= FONDO FIJO ================= */}
@@ -78,7 +79,7 @@ export default function DashboardPage() {
   </button>
 
   <h2 className="text-xl font-bold mb-2">{userData.nombre}</h2>
-  <p className="text-sm mb-4">{userData.rol}</p>
+  <p className="text-sm mb-4 uppercase">{userData.instrumento}</p>
 
   <div className="flex flex-col gap-2 mb-4">
     <button

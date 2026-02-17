@@ -27,6 +27,14 @@ export async function GET(req) {
 
     const drive = google.drive({ version: "v3", auth: oauth2Client });
 
+  // Obtener metadata (nombre original)
+    const fileMeta = await drive.files.get({
+     fileId,
+     fields: "name",
+    });
+
+    const originalName = fileMeta.data.name;
+
     // Descargar PDF como arraybuffer
     const response = await drive.files.get(
       { fileId, alt: "media" },
@@ -35,14 +43,16 @@ export async function GET(req) {
 
     console.log("✅ Archivo encontrado en Drive, enviando datos...");
 
+
     const headers = new Headers();
-    headers.set("Content-Type", "application/pdf");
-    headers.set(
-      "Content-Disposition",
-      download === "1"
-        ? `attachment; filename="${fileId}.pdf"`
-        : "inline"
-    );
+  headers.set("Content-Type", "application/pdf");
+headers.set(
+  "Content-Disposition",
+  download === "1"
+    ? `attachment; filename="${originalName}"`
+    : "inline"
+);
+
 
     return new Response(response.data, { headers });
   } catch (err) {
