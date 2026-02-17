@@ -1,12 +1,10 @@
 'use client'
 import { useState } from "react";
-import { motion } from "framer-motion";
 
 export const Releases = () => {
   const [showVideo, setShowVideo] = useState(false);
 
   const handlePlayClick = () => {
-    // Aquí podrías llamar a analytics o eventos personalizados
     console.log("Video clicked");
     setShowVideo(true);
   };
@@ -14,33 +12,19 @@ export const Releases = () => {
   return (
     <section
       id="audiovisuales"
-      className="flex justify-center items-center w-full min-h-[100dvh] bg-white py-16 text-center"
+      className="flex justify-center items-center w-full  bg-white py-16 text-center"
     >
       <div className="max-w-4xl w-11/12 flex flex-col items-center">
-        <motion.h2
-          className="text-3xl font-bold"
-          initial={{ opacity: 0, y: -20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-        >
+        
+        <h2 className="text-2xl sm:text-3xl font-bold">
           AUDIOVISUALES
-        </motion.h2>
+        </h2>
 
-        <motion.p
-          className="mt-6 text-gray-700"
-          initial={{ opacity: 0, y: -10 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3, duration: 0.5 }}
-        >
+        <p className="sm:mt-6 text-gray-700">
           Mantenete al tanto de todos nuestros lanzamientos.
-        </motion.p>
+        </p>
 
-        <motion.div
-          className="w-full max-w-3xl mt-6 rounded-xl overflow-hidden relative aspect-[16/9]"
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          transition={{ delay: 0.6, duration: 0.6 }}
-        >
+        <div className="w-full max-w-3xl mt-6 rounded-xl overflow-hidden relative aspect-[16/9]">
           {showVideo ? (
             <iframe
               className="w-full h-full"
@@ -71,16 +55,13 @@ export const Releases = () => {
               </div>
             </button>
           )}
-        </motion.div>
+        </div>
 
-        <motion.a
+        <a
           href="https://www.youtube.com/@LaVentoleraCandombe"
           className="mt-6 flex items-center text-black hover:text-gray-700 transition"
           target="_blank"
           rel="noopener noreferrer"
-          initial={{ opacity: 0, y: 10 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.9, duration: 0.5 }}
         >
           <img
             src="/media/icons/youtube-negro.webp"
@@ -88,7 +69,8 @@ export const Releases = () => {
             className="w-12 mr-4 transition-transform hover:scale-110"
           />
           <h3 className="text-lg font-semibold">SEGUINOS EN YOUTUBE</h3>
-        </motion.a>
+        </a>
+
       </div>
     </section>
   );

@@ -9,8 +9,8 @@ const items = [
  
  
   
-  { href: 'https://open.spotify.com/intl-es/artist/5hgeze6GTe8ckpSfdx3A5l?si=Ek-UhQZATOekLZiRwOnMUw', icon: spotifyIcon, alt: 'Spotify' },
-  { href: 'https://www.youtube.com/@LaVentoleraCandombe', icon: youtubeIcon, alt: 'YouTube' },
+  { href: 'https://open.spotify.com/intl-es/album/6Km0TYPUSTVzIjllyWcMba?si=16KJ439PSmSo8J-Ygxfc_A', icon: spotifyIcon, alt: 'Spotify' },
+  { href: 'https://www.youtube.com/watch?v=JaFuA-M2Ngo&list=OLAK5uy_mnq1QigoEMaxs3tzMn22sCC8copbFitM8', icon: youtubeIcon, alt: 'YouTube' },
  
 ];
 
@@ -123,7 +123,7 @@ useEffect(() => {
             <h1 className="text-4xl md:text-6xl font-black leading-tight uppercase">
              La Cantina
             </h1>
-              <div className=" flex items-center justify-center sm:justify-start  gap-6 py-6 w-full">
+              <div className=" flex items-center justify-center md:justify-start  gap-6 py-6 w-full">
                 <p className="">Escuchalo por: </p>
                      {items.map(({ href, icon, alt }) => (
                        <a key={alt} href={href} target="_blank" rel="noopener noreferrer">
@@ -137,7 +137,9 @@ useEffect(() => {
                        </a>
                      ))}
             </div>
-
+            <div className="flex justify-center items-center md:items-start md:justify-start">
+            <img src="/media/LogoVentolera.png" alt="Logo ventolearr" width={150} />
+            </div>
           </div>
 
         </div>

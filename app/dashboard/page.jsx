@@ -17,7 +17,7 @@ export default function DashboardPage() {
 
   const handleLogout = async () => {
     await signOut(auth);
-    router.push("/log-in");
+    router.push("/ventoapp");
   };
 
   if (!userData) return <p className="p-6">Cargando...</p>;
@@ -82,7 +82,7 @@ export default function DashboardPage() {
 
   <div className="flex flex-col gap-2 mb-4">
     <button
-      className={`py-2 px-3 rounded transition-all ${
+      className={`py-2 px-3 rounded transition-all cursor-pointer ${
         selectedTab === "partituras"
           ? "bg-orange-500/80 text-white font-semibold shadow-md"
           : "bg-white text-gray-700"
@@ -97,7 +97,7 @@ export default function DashboardPage() {
 
     {userData.rol === "admin" && (
       <button
-        className={`py-2 px-3 rounded transition-all ${
+        className={`py-2 px-3 rounded transition-all cursor-pointer ${
           selectedTab === "administracion"
             ? "bg-orange-500/80 text-white font-semibold shadow-md"
             : "bg-white text-gray-700"

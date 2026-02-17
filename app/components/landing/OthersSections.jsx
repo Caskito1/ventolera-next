@@ -42,7 +42,7 @@ const sliderRef = useRef(null);
       text: 'Nuestra escuela ofrece talleres de candombe, formación musical y espacios de aprendizaje colectivo para todas las edades. Promovemos la transmisión cultural desde la práctica y la experiencia.',
       cta: {
         label: 'Ver más',
-        url: '/escuela',
+        url: 'https://www.instagram.com/laventoleracandombe/',
       },
       img: '/media/gallery/vento.jpg'
     },
@@ -71,11 +71,11 @@ const sliderRef = useRef(null);
         <div className="absolute inset-0 bg-[url('/media/patterns/noise.webp')] opacity-30 mix-blend-overlay pointer-events-none" />
       </div>
 
-      <div className="max-w-6xl w-full space-y-8">
+      <div className="max-w-6xl w-full space-y-8 ">
         {/* Título y descripción general */}
-        <div>
-          <h2 className="text-4xl font-bold">Cooperativa</h2>
-          <p className="mt-4 max-w-2xl text-lg text-white/90">
+        <div className="flex flex-col justify-center items-center">
+          <h2 className=" text-2xl sm:text-3xl font-bold uppercase text-center">Cooperativa</h2>
+          <p className="mt-4 text-md text-white/90 text-center max-w-[700px] ">
             Somos parte de una red de trabajo cooperativo. Realizamos actividades culturales y talleres a través de nuestra escuela y convenios con FUCVAM.
           </p>
         </div>
@@ -88,11 +88,11 @@ const sliderRef = useRef(null);
               {data.map((item, idx) => (
                 <div
                   key={item.id}
-                  className="min-w-full snap-center bg-white/10 backdrop-blur-sm p-6 rounded-xl"
+                  className="min-w-full snap-center bg-white/10 backdrop-blur-sm p-6 rounded-xl text-center"
                 >
+                  <img src={item.img} alt={item.title} className="rounded-xl mb-4 w-full object-cover shadow-lg" />
                   <h3 className="text-2xl font-bold mb-2">{item.title}</h3>
                   <p className="text-white/90 mb-4">{item.text}</p>
-                  <img src={item.img} alt={item.title} className="rounded-xl mb-4 w-full object-cover shadow-lg" />
                   <a
                     href={item.cta.url}
                     target="_blank"

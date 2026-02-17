@@ -27,7 +27,7 @@ const albums = [
   {
     src: "/media/albums/SePicaLaCantina.webp",
     alt: "Se Pica la Cantina",
-    link: "https://open.spotify.com/intl-es/album/2YhM6rdQZCUm4j2W0SSYCq?si=caD0g48OQke07tCyYjaiOQ",
+    link: "https://open.spotify.com/intl-es/album/6Km0TYPUSTVzIjllyWcMba?si=16KJ439PSmSo8J-Ygxfc_A",
   },
 ];
 

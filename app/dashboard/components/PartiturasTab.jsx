@@ -42,7 +42,7 @@ export default function PartiturasTab({ userData, favorites, setFavorites }) {
       <h2 className="text-2xl font-bold mb-4">Partituras</h2>
 
       {userData.rol === "admin" && (
-        <div className="mb-4 flex gap-2 items-center">
+        <div className="mb-4 flex gap-2 items-center ">
           <label>Elegir instrumento:</label>
           <select
             className="border p-1 rounded"
@@ -106,7 +106,7 @@ export default function PartiturasTab({ userData, favorites, setFavorites }) {
                   {p.tema} ({p.instrumento})
                 </span>
 
-                <div className="flex gap-3 items-center">
+                <div className="flex gap-3 items-center ">
                   {/* ⭐ FAVORITO */}
                   <button
                     onClick={() => toggleFavorite(p.id, p.tema)}
@@ -114,9 +114,9 @@ export default function PartiturasTab({ userData, favorites, setFavorites }) {
                     className={`${!isAvailable && "cursor-not-allowed opacity-50"}`}
                   >
                     {favorites.includes(p.id) ? (
-                      <img src="/media/icons/star-yellow.webp" alt="Star Selected" height={16} width={16} />
+                      <img src="/media/icons/star-yellow.webp" alt="Star Selected" height={16} width={16} className="cursor-pointer"/>
                     ) : (
-                      <img src="/media/icons/star.webp" alt="Star empty" height={16} width={16} />
+                      <img src="/media/icons/star.webp" alt="Star empty" height={16} width={16} className="cursor-pointer" />
                     )}
                   </button>
 
@@ -124,7 +124,7 @@ export default function PartiturasTab({ userData, favorites, setFavorites }) {
                   {isAvailable ? (
                     <a
                       href={`/api/downloadpdf?fileId=${p.driveFileId}&download=1`}
-                      className="flex items-center gap-1 text-blue-600 hover:text-blue-800"
+                      className="flex items-center gap-1 text-blue-600 hover:text-blue-800 cursor-pointer"
                     >
                       <img src="/media/icons/download.webp" alt="Star Selected" height={20} width={20} />
                     </a>
