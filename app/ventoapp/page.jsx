@@ -8,7 +8,9 @@ import { auth } from "@/firebase";
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
+
   const router = useRouter();
 
   const handleLogin = async (e) => {
@@ -35,33 +37,44 @@ export default function LoginPage() {
       </div>
       <form
         onSubmit={handleLogin}
+        autoComplete="on"
         className="backdrop-blur-md bg-white/10 border border-white/20 shadow-xl rounded-2xl p-8 w-80 text-center text-white"
       >
         <h1 className="text-xl font-bold mb-4 text-center">Iniciar sesión</h1>
 
         {error && <p className="text-red-500 text-sm mb-2">{error}</p>}
 
-        <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          className="border p-2 w-full mb-3 rounded"
-          required
-        />
-
-        <input
-          type="password"
-          placeholder="Contraseña"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          className="border p-2 w-full mb-3 rounded"
-          required
-        />
-
+      <input
+  type="email"
+  name="email"
+  autoComplete="email"
+  placeholder="Email"
+  value={email}
+  onChange={(e) => setEmail(e.target.value)}
+  className="border p-2 w-full mb-3 rounded"
+  required
+/>
+<div className="relative mb-3">
+       <input
+  type={showPassword ? "text" : "password"}
+  name="password"
+  autoComplete="current-password"
+  placeholder="Contraseña"
+  value={password}
+  onChange={(e) => setPassword(e.target.value)}
+  className="border p-2 w-full  rounded"
+  required
+/>  <button
+    type="button"
+    onClick={() => setShowPassword(!showPassword)}
+    className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-gray-300 hover:text-white"
+  >
+    {showPassword ? <img src="/media/icons/ojo.png" width={16} className="cursor-pointer" alt="open-eye-icon" /> :<img src="/media/icons/invisible.png" width={16} className="cursor-pointer" alt="close-eye-icon" />}
+  </button>
+</div>
         <button
           type="submit"
-           className="bg-orange-500/80 hover:bg-orange-600/90 text-white font-semibold py-2 rounded-md w-full transition-all duration-200 backdrop-blur-sm shadow-md hover:shadow-lg"
+           className="bg-orange-500/80 hover:bg-orange-600/90 text-white font-semibold py-2 rounded-md w-full transition-all duration-200 backdrop-blur-sm shadow-md hover:shadow-lg cursor-pointer"
         >
           Entrar
         </button>

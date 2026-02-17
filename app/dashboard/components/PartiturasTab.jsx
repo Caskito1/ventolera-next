@@ -70,7 +70,7 @@ export default function PartiturasTab({ userData, favorites, setFavorites }) {
       <div className="flex gap-2 mb-4">
         <button
           className={`py-1 px-3 rounded ${
-            !showFavorites ? "bg-blue-500 text-white" : "bg-gray-200"
+            !showFavorites ? "bg-orange-500/80 text-white" : "bg-gray-200"
           }`}
           onClick={() => setShowFavorites(false)}
         >
@@ -78,7 +78,7 @@ export default function PartiturasTab({ userData, favorites, setFavorites }) {
         </button>
         <button
           className={`py-1 px-3 rounded ${
-            showFavorites ? "bg-blue-500 text-white" : "bg-gray-200"
+            showFavorites ? "bg-orange-500/80 text-white" : "bg-gray-200"
           }`}
           onClick={() => setShowFavorites(true)}
         >

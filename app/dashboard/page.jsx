@@ -24,7 +24,7 @@ export default function DashboardPage() {
   console.log(userData);
   
   return (
-    <div className="min-h-screen relative">
+    <div className="min-h-screen  flex relative">
       {/* ================= FONDO FIJO ================= */}
       <div className="fixed inset-0 -z-10">
         <div
@@ -38,11 +38,20 @@ export default function DashboardPage() {
       </div>
 
       {/* ================= HEADER MOBILE ================= */}
-      <header className="lg:hidden fixed top-0 left-0 right-0 z-30 flex items-center justify-between px-4 h-14 bg-white border-b text-gray-900">
+   <header
+  className="
+    lg:hidden
+    fixed top-0 left-0 right-0 z-30
+    flex items-center justify-between px-4 h-14
+    bg-black/40 backdrop-blur-lg
+    text-white
+    border-b border-white/10
+  "
+>
+        <span className="font-black">VENTOAPP</span>
         <button onClick={() => setMenuOpen(true)} className="text-2xl">
           ☰
         </button>
-        <span className="font-black">VENTOAPP</span>
       </header>
 
       {/* ================= OVERLAY MOBILE ================= */}
@@ -126,11 +135,14 @@ export default function DashboardPage() {
       {/* ================= CONTENIDO ================= */}
       <main
         className="
-          pt-20 px-4
-          lg:pt-6 lg:pl-80 lg:pr-6
-        "
+    pt-20 px-4
+    lg:pt-6 lg:pl-80 lg:pr-6 w-full pb-6
+  "
       >
-        <div className="bg-white p-4 rounded-lg shadow max-h-[calc(100vh-6rem)] overflow-y-auto">
+       <div className="bg-white rounded-lg shadow flex-1 overflow-hidden">
+  <div className="p-4 h-full overflow-y-auto">
+
+
           {selectedTab === "partituras" && (
             <PartiturasTab
               userData={userData}
@@ -142,6 +154,7 @@ export default function DashboardPage() {
           {selectedTab === "administracion" && (
             <AdministracionTab userData={userData} />
           )}
+        </div>
         </div>
       </main>
     </div>
