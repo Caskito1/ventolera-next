@@ -9,24 +9,67 @@ export default function PartiturasTab({ userData, favorites, setFavorites }) {
   const [searchTerm, setSearchTerm] = useState("");
   const [showFavorites, setShowFavorites] = useState(false);
   const [selectedInstrument, setSelectedInstrument] = useState("todos");
+  const [downloadingId, setDownloadingId] = useState(null);
+  const [animatingId, setAnimatingId] = useState(null);
 
-  const toggleFavorite = async (pdfId, pdfName) => {
-    const favRef = doc(
-      db,
-      "usuarios",
-      auth.currentUser.uid,
-      "favoritos",
-      pdfId,
+  const handleDownload = async (fileId, fileName) => {
+  try {
+    setDownloadingId(fileId);
+
+    const response = await fetch(
+      `/api/downloadpdf?fileId=${fileId}&download=1`
     );
 
-    if (favorites.includes(pdfId)) {
+    const blob = await response.blob();
+
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `${fileName}.pdf`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    window.URL.revokeObjectURL(url);
+  } catch (error) {
+    console.error("Error descargando:", error);
+  } finally {
+    setDownloadingId(null);
+  }
+};
+
+  const toggleFavorite = async (pdfId, pdfName) => {
+  const favRef = doc(
+    db,
+    "usuarios",
+    auth.currentUser.uid,
+    "favoritos",
+    pdfId
+  );
+
+  const isFav = favorites.includes(pdfId);
+
+  // 🔥 Optimistic update
+  if (isFav) {
+    setFavorites((prev) => prev.filter((id) => id !== pdfId));
+  } else {
+    setFavorites((prev) => [...prev, pdfId]);
+  }
+
+  // Activar animación
+  setAnimatingId(pdfId);
+  setTimeout(() => setAnimatingId(null), 300);
+
+  try {
+    if (isFav) {
       await deleteDoc(favRef);
-      setFavorites((prev) => prev.filter((id) => id !== pdfId));
     } else {
       await setDoc(favRef, { name: pdfName, addedAt: new Date() });
-      setFavorites((prev) => [...prev, pdfId]);
     }
-  };
+  } catch (error) {
+    console.error("Error favorito:", error);
+  }
+};
+
 
   const filteredPDFs = partituras
     .filter((p) => p.tema.toLowerCase().includes(searchTerm.toLowerCase()))
@@ -109,25 +152,46 @@ export default function PartiturasTab({ userData, favorites, setFavorites }) {
                 <div className="flex gap-3 items-center ">
                   {/* ⭐ FAVORITO */}
                   <button
-                    onClick={() => toggleFavorite(p.id, p.tema)}
-                    disabled={!isAvailable}
-                    className={`${!isAvailable && "cursor-not-allowed opacity-50"}`}
-                  >
-                    {favorites.includes(p.id) ? (
-                      <img src="/media/icons/star-yellow.webp" alt="Star Selected" height={16} width={16} className="cursor-pointer"/>
-                    ) : (
-                      <img src="/media/icons/star.webp" alt="Star empty" height={16} width={16} className="cursor-pointer" />
-                    )}
-                  </button>
+  onClick={() => toggleFavorite(p.id, p.tema)}
+  disabled={!isAvailable}
+  className={`${!isAvailable && "cursor-not-allowed opacity-50"}`}
+>
+  <img
+    src={
+      favorites.includes(p.id)
+        ? "/media/icons/star-yellow.webp"
+        : "/media/icons/star.webp"
+    }
+    alt="Favorito"
+    height={16}
+    width={16}
+    className={`
+      transition-transform duration-200
+      ${animatingId === p.id ? "scale-125" : "scale-100"}
+      ${favorites.includes(p.id) ? "" : ""}
+    `}
+  />
+</button>
+
 
                   {/* ⬇ DESCARGA */}
                   {isAvailable ? (
-                    <a
-                      href={`/api/downloadpdf?fileId=${p.driveFileId}&download=1`}
-                      className="flex items-center gap-1 text-blue-600 hover:text-blue-800 cursor-pointer"
-                    >
-                      <img src="/media/icons/download.webp" alt="Star Selected" height={20} width={20} />
-                    </a>
+                    <button
+  onClick={() => handleDownload(p.driveFileId, p.tema)}
+  disabled={downloadingId === p.driveFileId}
+  className="flex items-center justify-center w-6 h-6"
+>
+  {downloadingId === p.driveFileId ? (
+    <div className="w-4 h-4 border-2 border-gray-400 border-t-orange-600 rounded-full animate-spin" />
+  ) : (
+    <img
+      src="/media/icons/download.webp"
+      height={20}
+      width={20}
+      className="cursor-pointer"
+    />
+  )}
+</button>
                   ) : (
                     <div className="flex items-center gap-1 text-gray-400 cursor-not-allowed">
                         <img src="/media/icons/block.webp" alt="Star Selected" height={16} width={16} />

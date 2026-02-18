@@ -20,8 +20,31 @@ export default function DashboardPage() {
     router.push("/ventoapp");
   };
 
-  if (!userData) return <p className="p-6">Cargando...</p>;
-  console.log(userData);
+  if (!userData) {
+  return (
+    <div className="min-h-screen flex items-center justify-center relative">
+      {/* FONDO */}
+      <div className="fixed inset-0 -z-10">
+        <div
+          className="w-full h-full bg-center bg-cover"
+          style={{
+            backgroundImage: "url('/media/bg-modales/coope-modal.webp')",
+          }}
+        />
+        <div className="absolute inset-0 bg-gray-900/80" />
+        <div className="absolute inset-0 bg-[url('/media/patterns/noise.webp')] opacity-30 mix-blend-overlay pointer-events-none" />
+      </div>
+
+      {/* LOADING */}
+      <div className="text-center text-white">
+        <div className="w-12 h-12 border-4 border-white/30 border-t-white rounded-full animate-spin mx-auto mb-4" />
+        <p className="text-lg font-black tracking-wide  ">
+        VENTOAPP
+        </p>
+      </div>
+    </div>
+  );
+}
   
   return (
     <div className="min-h-screen  flex relative">
@@ -66,7 +89,7 @@ export default function DashboardPage() {
    {/* ================= SIDEBAR ================= */}
 <aside
   className={`
-    fixed z-30 top-0 left-0 h-screen w-64 p-4 shadow flex flex-col
+    fixed z-30 top-0 left-0 min-h-screen h-[100dvh] w-64 p-4 shadow flex flex-col
     transform transition-transform duration-300
     ${menuOpen ? "translate-x-0" : "-translate-x-full"}
     lg:translate-x-0

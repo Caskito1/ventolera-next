@@ -1,7 +1,7 @@
 'use client'
 import { Footer } from "./components/Footer";
 import { About } from "./components/landing/About";
-import About2 from "./components/landing/About copy";
+import About2 from "./components/landing/About2";
 
 import { Gallery } from "./components/landing/Gallery";
 import HeaderAlbum from "./components/landing/HeaderAlbum";

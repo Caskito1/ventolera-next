@@ -17,6 +17,7 @@ const items = [
 
 const HeaderAlbum = () => {
     const [offsetY, setOffsetY] = useState(0);
+    const [isPlaying, setIsPlaying] = useState(false);
 
 
     // Parallax
@@ -30,13 +31,22 @@ useEffect(() => {
    <section className="relative w-full min-h-screen overflow-hidden">
 
 
-      {/* Background Image */}
-     <img
-  src="/media/header/bg-sepica.webp"
-  alt="Background"
-  className="absolute inset-0 w-full h-[120%] object-cover will-change-transform"
+     {/* Background Wrapper (parallax) */}
+<div
+  className="absolute inset-0 will-change-transform"
   style={{ transform: `translateY(${offsetY * 0.7}px)` }}
-/>
+>
+  {/* Imagen que respira */}
+  <img
+    src="/media/header/bg-sepica.webp"
+    alt="Background"
+    className={`
+      w-full h-[120%] object-cover
+      transition-transform duration-[4000ms] ease-in-out
+      ${isPlaying ? "animate-bg-breath" : ""}
+    `}
+  />
+</div>
 
 
     {/* Glass base */}
@@ -44,6 +54,62 @@ useEffect(() => {
 
 {/* Violet subtle tint */}
 <div className="absolute inset-0 bg-gradient-to-br from-violet-900/20 via-purple-800/15 to-black/40" />
+{isPlaying && (
+  <div className="absolute inset-0 pointer-events-none overflow-hidden">
+
+    {/* 🟣 Foco violeta - movimiento curvo */}
+    <div className="absolute inset-0 animate-spotlight-left">
+      <div
+        className="
+          absolute top-[-40%] left-[20%]
+          w-[8%] h-[240%]
+          bg-gradient-to-b
+          from-violet-400/60
+          via-violet-500/35
+          to-transparent
+          blur-2xl
+          mix-blend-screen
+          rotate-12
+          rounded-full
+        "
+      />
+    </div>
+
+    {/* 🟠 Foco naranja - movimiento curvo opuesto */}
+    <div className="absolute inset-0 animate-spotlight-right">
+      <div
+        className="
+          absolute top-[-40%] right-[20%]
+          w-[8%] h-[240%]
+          bg-gradient-to-b
+          from-orange-400/60
+          via-orange-500/35
+          to-transparent
+          blur-2xl
+          mix-blend-screen
+          -rotate-12
+          rounded-full
+        "
+      />
+    </div>
+
+    {/* ✨ Glow ambiente dinámico más natural */}
+    <div className="absolute inset-0 animate-glow-stage">
+      <div
+        className="
+          w-full h-full
+          bg-gradient-to-br
+          from-transparent
+          via-violet-500/30
+          to-transparent
+          blur-3xl
+          mix-blend-screen
+        "
+      />
+    </div>
+
+  </div>
+)}
 
 
 
@@ -72,7 +138,7 @@ useEffect(() => {
 
   {/* Play centrado */}
   <div className="absolute inset-0 flex items-center justify-center z-20">
-    <AlbumPlayer />
+   <AlbumPlayer isPlaying={isPlaying} setIsPlaying={setIsPlaying} />
   </div>
 
 </div>
@@ -82,7 +148,7 @@ useEffect(() => {
 <div
   className="absolute left-1/2 -translate-x-1/2 z-0 pointer-events-none"
   style={{
-    bottom: "-60px",
+    bottom: "-40px",
     width: "85%",
     height: "20px",
   }}
@@ -117,10 +183,10 @@ useEffect(() => {
               Nuevo Lanzamiento
             </span>
 
-            <h1 className="text-4xl md:text-6xl font-normal leading-tight uppercase">
+            <h1 className="text-4xl md:text-6xl font-normal uppercase leading-[1]">
               Se Pica 
             </h1>
-            <h1 className="text-4xl md:text-6xl font-black leading-tight uppercase">
+            <h1 className="text-4xl md:text-6xl font-black  uppercase leading-[1]">
              La Cantina
             </h1>
               <div className=" flex items-center justify-center md:justify-start  gap-6 py-6 w-full">

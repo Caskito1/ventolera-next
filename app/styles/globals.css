@@ -83,4 +83,226 @@ body {
   100% { transform: scaleX(1); opacity: 0.55; }
 }
 
+/* ===============================
+   Background breathing animation
+================================ */
 
+@keyframes bgBreath {
+  0%, 100% {
+    transform: scale(1.05);
+  }
+  50% {
+    transform: scale(1.12);
+  }
+}
+
+.animate-bg-breath {
+  animation: bgBreath 8s ease-in-out infinite;
+}
+
+
+/* ===============================
+   Light flare animation
+================================ */
+
+@keyframes flarePulse {
+  0%, 100% {
+    opacity: 0.3;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.6;
+    transform: scale(1.2);
+  }
+}
+
+.animate-flare {
+  animation: flarePulse 6s ease-in-out infinite;
+}
+
+/* =====================================
+   Stage Light Sweep
+===================================== */
+
+@keyframes stageLight {
+  0% {
+    transform: translate(-60%, -60%) rotate(25deg);
+    opacity: 0;
+  }
+  20% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 0.8;
+  }
+  80% {
+    opacity: 0.4;
+  }
+  100% {
+    transform: translate(60%, 60%) rotate(25deg);
+    opacity: 0;
+  }
+}
+
+.animate-stage-light {
+  animation: stageLight 6s ease-in-out infinite;
+}
+
+/* ====== LUZ CÓNICA MÁS ANGOSTA ====== */
+@keyframes spotlight {
+  0% {
+    transform: rotate(-35deg) translateX(-120%);
+    opacity: 0;
+  }
+  20% {
+    opacity: 0.7;
+  }
+  50% {
+    opacity: 1;
+  }
+  80% {
+    opacity: 0.7;
+  }
+  100% {
+    transform: rotate(35deg) translateX(120%);
+    opacity: 0;
+  }
+}
+
+/* ====== VIBRACIÓN SUAVE ====== */
+@keyframes subtle-vibrate {
+  0%, 100% { transform: translate(0, 0); }
+  25% { transform: translate(0.5px, -0.5px); }
+  50% { transform: translate(-0.5px, 0.5px); }
+  75% { transform: translate(0.5px, 0.5px); }
+}
+
+.animate-spotlight {
+  animation: spotlight 3.5s ease-in-out infinite;
+}
+
+.animate-vibrate {
+  animation: subtle-vibrate 0.4s ease-in-out infinite;
+}
+
+/* Foco izquierda → derecha */
+@keyframes lightLeft {
+  0% {
+    transform: translateX(-30%) rotate(12deg);
+    opacity: 0;
+  }
+  20% { opacity: 1; }
+  50% {
+    transform: translateX(40%) rotate(12deg);
+    opacity: 0.8;
+  }
+  100% {
+    transform: translateX(80%) rotate(12deg);
+    opacity: 0;
+  }
+}
+
+/* Foco derecha → izquierda */
+@keyframes lightRight {
+  0% {
+    transform: translateX(30%) rotate(-12deg);
+    opacity: 0;
+  }
+  20% { opacity: 1; }
+  50% {
+    transform: translateX(-40%) rotate(-12deg);
+    opacity: 0.8;
+  }
+  100% {
+    transform: translateX(-80%) rotate(-12deg);
+    opacity: 0;
+  }
+}
+
+/* Glow intermitente */
+@keyframes glowPulse {
+  0%, 100% { opacity: 0.2; }
+  50% { opacity: 0.8; }
+}
+
+.animate-light-left {
+  animation: lightLeft 6s ease-in-out infinite;
+}
+
+.animate-light-right {
+  animation: lightRight 6s ease-in-out infinite;
+}
+
+.animate-glow-pulse {
+  animation: glowPulse 3s ease-in-out infinite;
+}
+
+/* 🟣 Spotlight izquierdo - movimiento curvo */
+@keyframes spotlightLeft {
+  0% {
+    transform: translate(-30%, 0%) rotate(10deg);
+    opacity: 0;
+  }
+  20% { opacity: 0.8; }
+
+  40% {
+    transform: translate(10%, -5%) rotate(14deg);
+  }
+
+  60% {
+    transform: translate(40%, 5%) rotate(18deg);
+  }
+
+  80% {
+    transform: translate(70%, -2%) rotate(15deg);
+  }
+
+  100% {
+    transform: translate(90%, 0%) rotate(12deg);
+    opacity: 0;
+  }
+}
+
+/* 🟠 Spotlight derecho - movimiento curvo opuesto */
+@keyframes spotlightRight {
+  0% {
+    transform: translate(30%, 0%) rotate(-10deg);
+    opacity: 0;
+  }
+  20% { opacity: 0.8; }
+
+  40% {
+    transform: translate(-10%, 5%) rotate(-14deg);
+  }
+
+  60% {
+    transform: translate(-40%, -5%) rotate(-18deg);
+  }
+
+  80% {
+    transform: translate(-70%, 2%) rotate(-15deg);
+  }
+
+  100% {
+    transform: translate(-90%, 0%) rotate(-12deg);
+    opacity: 0;
+  }
+}
+
+/* Glow ambiente más orgánico */
+@keyframes glowStage {
+  0%, 100% { opacity: 0.25; }
+  50% { opacity: 0.6; }
+}
+
+.animate-spotlight-left {
+  animation: spotlightLeft 7s ease-in-out infinite;
+}
+
+.animate-spotlight-right {
+  animation: spotlightRight 7s ease-in-out infinite;
+}
+
+.animate-glow-stage {
+  animation: glowStage 4s ease-in-out infinite;
+}
