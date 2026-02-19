@@ -2,6 +2,7 @@ import { useState } from "react";
 import { doc, setDoc, deleteDoc } from "firebase/firestore";
 import { auth, db } from "@/firebase";
 import { usePartituras } from "@/app/hooks/usePartituras";
+import UploadPartituraModal from "./UploadPartiturasModal";
 
 export default function PartiturasTab({ userData, favorites, setFavorites }) {
   const { partituras, loading } = usePartituras(userData?.subrol);
@@ -11,6 +12,7 @@ export default function PartiturasTab({ userData, favorites, setFavorites }) {
   const [selectedInstrument, setSelectedInstrument] = useState("todos");
   const [downloadingId, setDownloadingId] = useState(null);
   const [animatingId, setAnimatingId] = useState(null);
+  const [showUploadModal, setShowUploadModal] = useState(false);
 
   const handleDownload = async (fileId, fileName) => {
   try {
@@ -82,8 +84,23 @@ export default function PartiturasTab({ userData, favorites, setFavorites }) {
 
   return (
     <>
+    {showUploadModal && (
+  <UploadPartituraModal
+    onClose={() => setShowUploadModal(false)}
+    instrumentos={userData.subrol}
+  />
+)}
+    <div className="flex justify-between items-center mb-4">
       <h2 className="text-2xl font-bold mb-4">Partituras</h2>
-
+        {userData.rol === "admin" && (
+    <button
+      onClick={() => setShowUploadModal(true)}
+      className="w-10 h-10 rounded-full bg-orange-500 text-white text-2xl flex items-center justify-center shadow-lg hover:bg-orange-600 transition"
+    >
+      +
+    </button>
+  )}
+ </div>
       {(userData.rol === "admin" || userData.subrol.length > 1) && (
         <div className="mb-4 flex gap-2 items-center ">
           <label>Elegir instrumento:</label>
@@ -100,7 +117,10 @@ export default function PartiturasTab({ userData, favorites, setFavorites }) {
             ))}
           </select>
         </div>
+        
       )}
+     
+      
 
       <input
         type="text"
@@ -203,6 +223,7 @@ export default function PartiturasTab({ userData, favorites, setFavorites }) {
           })}
         </ul>
       )}
+     
     </>
   );
 }

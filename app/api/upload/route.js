@@ -1,50 +1,122 @@
-import { google } from "googleapis";
-import formidable from "formidable";
-import fs from "fs";
+export const runtime = "nodejs";
 
-export const config = {
-  api: {
-    bodyParser: false, // para subir archivos
-  },
+import { google } from "googleapis";
+import { NextResponse } from "next/server";
+
+/* ===============================
+   📁 Carpetas por instrumento
+================================ */
+const INSTRUMENT_FOLDERS = {
+  "saxo-alto": "1QZ8gd1JhOcPdS3uPYNYKFmwjaGzRKvhi",
+  "saxo-tenor": "1dMSDqVMR1xmPCsufb4mM57zWHQ-Mh-2Y",
+  "saxo-bari": "1CdmFjhg6H1dewxlgADX2T6k6vHMipdFu",
+  "trombon": "1HiH2GyBS4-NLFrxO5dW79Xxd53zO_czB",
+  "trompeta-01": "1oi9te5K25jn9E4Y_UsF_qIZRb3wub5dY",
+  "trompeta-02": "1yq4esUpgeesqc2VQgLkrcCTUKjKD96SF",
+  "tuba": "1TNm8cuKErsg4aRKRdyc1WV9qPOYLys9l",
 };
 
+/* ===============================
+   🔤 Slugify
+================================ */
+function slugify(text) {
+  return text
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/(^-|-$)/g, "");
+}
+
+/* ===============================
+   🚀 POST
+================================ */
 export async function POST(req) {
-  const refresh_token = process.env.GOOGLE_REFRESH_TOKEN;
-  const client_id = process.env.GOOGLE_CLIENT_ID;
-  const client_secret = process.env.GOOGLE_CLIENT_SECRET;
+  try {
+    const formData = await req.formData();
 
-  const oauth2Client = new google.auth.OAuth2(client_id, client_secret);
-  oauth2Client.setCredentials({ refresh_token });
+    const file = formData.get("file");
+    const tema = formData.get("tema");
+    const instrumento = formData.get("instrumento");
 
-  const drive = google.drive({ version: "v3", auth: oauth2Client });
+    /* ===============================
+       🔎 Validaciones básicas
+    ================================ */
+    if (!file || !tema || !instrumento) {
+      return NextResponse.json(
+        { error: "Faltan datos" },
+        { status: 400 }
+      );
+    }
 
-  const form = new formidable.IncomingForm();
+    const folderId = INSTRUMENT_FOLDERS[instrumento];
 
-  const data = await new Promise((resolve, reject) => {
-    form.parse(req, (err, fields, files) => {
-      if (err) reject(err);
-      resolve({ fields, files });
+    if (!folderId) {
+      return NextResponse.json(
+        { error: "Instrumento inválido" },
+        { status: 400 }
+      );
+    }
+
+    /* ===============================
+       🔐 OAuth2
+    ================================ */
+    const oauth2Client = new google.auth.OAuth2(
+      process.env.GOOGLE_CLIENT_ID,
+      process.env.GOOGLE_CLIENT_SECRET,
+      process.env.GOOGLE_REDIRECT_URI
+    );
+
+    oauth2Client.setCredentials({
+      refresh_token: process.env.GOOGLE_REFRESH_TOKEN,
     });
-  });
 
-  const file = data.files.file; // nombre del input 'file'
+    const drive = google.drive({ version: "v3", auth: oauth2Client });
 
-  const folderId = "TU_FOLDER_ID";
+    /* ===============================
+       📄 Preparar archivo
+    ================================ */
+    const buffer = Buffer.from(await file.arrayBuffer());
 
-  const fileMetadata = {
-    name: file.originalFilename,
-    parents: [folderId],
-  };
-  const media = {
-    mimeType: file.mimetype,
-    body: fs.createReadStream(file.filepath),
-  };
+    const slug = `${slugify(tema)}-${instrumento}`;
+    const fileName = `${slug}.pdf`;
 
-  const response = await drive.files.create({
-    requestBody: fileMetadata,
-    media: media,
-    fields: "id, name, webViewLink",
-  });
+    console.log("📤 Subiendo:", fileName);
+    console.log("📁 Carpeta destino:", folderId);
 
-  return new Response(JSON.stringify(response.data), { status: 200 });
+    /* ===============================
+       ☁ Subir a Drive
+    ================================ */
+    const driveResponse = await drive.files.create({
+      requestBody: {
+        name: fileName,
+        parents: [folderId],
+      },
+      media: {
+        mimeType: "application/pdf",
+        body: buffer,
+      },
+      fields: "id, name",
+    });
+
+    console.log("✅ Archivo subido:", driveResponse.data.id);
+
+    /* ===============================
+       📦 Respuesta al frontend
+    ================================ */
+    return NextResponse.json({
+      instrumento,
+      fileId: driveResponse.data.id,
+      fileName: driveResponse.data.name,
+      slug,
+    });
+
+  } catch (error) {
+    console.error("❌ Error subiendo a Drive:", error);
+
+    return NextResponse.json(
+      { error: "Error subiendo archivo", details: error.message },
+      { status: 500 }
+    );
+  }
 }
