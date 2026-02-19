@@ -2,6 +2,7 @@ export const runtime = "nodejs";
 
 import { google } from "googleapis";
 import { NextResponse } from "next/server";
+import { Readable } from "stream";
 
 /* ===============================
    📁 Carpetas por instrumento
@@ -76,7 +77,11 @@ export async function POST(req) {
     /* ===============================
        📄 Preparar archivo
     ================================ */
-    const buffer = Buffer.from(await file.arrayBuffer());
+
+
+const arrayBuffer = await file.arrayBuffer();
+const buffer = Buffer.from(arrayBuffer);
+const stream = Readable.from(buffer);
 
     const slug = `${slugify(tema)}-${instrumento}`;
     const fileName = `${slug}.pdf`;
@@ -92,10 +97,10 @@ export async function POST(req) {
         name: fileName,
         parents: [folderId],
       },
-      media: {
-        mimeType: "application/pdf",
-        body: buffer,
-      },
+    media: {
+  mimeType: "application/pdf",
+  body: stream,
+},
       fields: "id, name",
     });
 
