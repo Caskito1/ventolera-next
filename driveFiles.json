@@ -1,6 +1,30 @@
 [
   {
     "instrumento": "saxo-alto",
+    "fileId": "1reNyYRBxPihhKXIWnX51OIcvwIe-qstW",
+    "fileName": "candombe-para-gardel-saxo-alto.pdf",
+    "slug": "candombe-para-gardel-saxo-alto"
+  },
+  {
+    "instrumento": "saxo-alto",
+    "fileId": "1egSROENtexAwU8JIwOe1aLRhcTwIo4s_",
+    "fileName": "candombe-para-gardel-cantada-saxo-alto.pdf",
+    "slug": "candombe-para-gardel-cantada-saxo-alto"
+  },
+  {
+    "instrumento": "saxo-alto",
+    "fileId": "1Y3VyokhMEXepXxtGlgqSaybI_XYyXVd_",
+    "fileName": "al-espejo-saxo-alto.pdf",
+    "slug": "al-espejo-saxo-alto"
+  },
+  {
+    "instrumento": "saxo-alto",
+    "fileId": "15vQDcDbVViqlKlnkbVTzcjrVTuQ1aDaB",
+    "fileName": "don-t-take-my-coconuts-saxo-alto.pdf",
+    "slug": "don-t-take-my-coconuts-saxo-alto"
+  },
+  {
+    "instrumento": "saxo-alto",
     "fileId": "1fIbnQ0BSAaBTzACIJEKGS3kP_43JVYLm",
     "fileName": "upa-nega-saxo-alto.pdf",
     "slug": "upa-nega-saxo-alto"
@@ -256,6 +280,30 @@
     "fileId": "19YmNobAOZ21wOh2zrsi2_i6Nll_TvS-k",
     "fileName": "batukembe-saxo-alto.pdf",
     "slug": "batukembe-saxo-alto"
+  },
+  {
+    "instrumento": "saxo-tenor",
+    "fileId": "1AyqPY4Nsr-8kikZNb0RpNGsYSkO2dv-W",
+    "fileName": "candombe-para-gardel-saxo-tenor.pdf",
+    "slug": "candombe-para-gardel-saxo-tenor"
+  },
+  {
+    "instrumento": "saxo-tenor",
+    "fileId": "1wqYRb5sKqMzK5SRqT-hm5cDkRW06_dU1",
+    "fileName": "candombe-para-gardel-cantada-saxo-tenor.pdf",
+    "slug": "candombe-para-gardel-cantada-saxo-tenor"
+  },
+  {
+    "instrumento": "saxo-tenor",
+    "fileId": "14Nm3rXPDh_GNEvAmHglIQYHbO4Qz1K7y",
+    "fileName": "al-espejo-saxo-tenor.pdf",
+    "slug": "al-espejo-saxo-tenor"
+  },
+  {
+    "instrumento": "saxo-tenor",
+    "fileId": "15DtJkOL0VwUVhTZB_lIs5vfmCJ4VzljQ",
+    "fileName": "don-t-take-my-coconuts-saxo-tenor.pdf",
+    "slug": "don-t-take-my-coconuts-saxo-tenor"
   },
   {
     "instrumento": "saxo-tenor",
@@ -517,6 +565,30 @@
   },
   {
     "instrumento": "saxo-bari",
+    "fileId": "1wpgmBlpdWxJ7dtxKTOC2sGGMG_34jHb3",
+    "fileName": "candombe-para-gardel-saxo-bari.pdf",
+    "slug": "candombe-para-gardel-saxo-bari"
+  },
+  {
+    "instrumento": "saxo-bari",
+    "fileId": "13f_Nyjyiwar2JQHo5_AyRsz9x2AJy4dk",
+    "fileName": "candombe-para-gardel-cantada-saxo-bari.pdf",
+    "slug": "candombe-para-gardel-cantada-saxo-bari"
+  },
+  {
+    "instrumento": "saxo-bari",
+    "fileId": "1L4WRIJRxAcd77XIqnYip2rjtoMV0y-RF",
+    "fileName": "al-espejo-saxo-bari.pdf",
+    "slug": "al-espejo-saxo-bari"
+  },
+  {
+    "instrumento": "saxo-bari",
+    "fileId": "1XAw7LMmKnvrfBS2KVdvrWbEtj6NQJWtx",
+    "fileName": "don-t-take-my-coconuts-saxo-bari.pdf",
+    "slug": "don-t-take-my-coconuts-saxo-bari"
+  },
+  {
+    "instrumento": "saxo-bari",
     "fileId": "1HNHFYGWGyZn2a0GHhDP7tEUvHD9003UR",
     "fileName": "tal-vez-cheche-saxo-bari.pdf",
     "slug": "tal-vez-cheche-saxo-bari"
@@ -766,6 +838,30 @@
     "fileId": "1QXmIG8OHEdN82BzTbOt-WPgM_GR9CqZX",
     "fileName": "bueno-que-me-voy-saxo-bari.pdf",
     "slug": "bueno-que-me-voy-saxo-bari"
+  },
+  {
+    "instrumento": "trombon",
+    "fileId": "1ruYABOXcTK-p18bPNWqO4KkNSxyNe3Zt",
+    "fileName": "candombe-para-gardel-trombon.pdf",
+    "slug": "candombe-para-gardel-trombon"
+  },
+  {
+    "instrumento": "trombon",
+    "fileId": "1cbrjNxpHgnT6vx1pDatJnO8kg6wS8gcR",
+    "fileName": "candombe-para-gardel-cantada-trombon.pdf",
+    "slug": "candombe-para-gardel-cantada-trombon"
+  },
+  {
+    "instrumento": "trombon",
+    "fileId": "15vziJ_ZwRKg1ijmmxZv3lHcG2uvakdZL",
+    "fileName": "al-espejo-trombon.pdf",
+    "slug": "al-espejo-trombon"
+  },
+  {
+    "instrumento": "trombon",
+    "fileId": "15iLEZItcUZ3gArXEBdkfFppuKTa3E9f0",
+    "fileName": "don-t-take-my-coconuts-trombon.pdf",
+    "slug": "don-t-take-my-coconuts-trombon"
   },
   {
     "instrumento": "trombon",
@@ -1027,6 +1123,30 @@
   },
   {
     "instrumento": "trompeta-01",
+    "fileId": "19f3qo1Kk_D9YdIN7Of9pBO3tkNWEjZCD",
+    "fileName": "candombe-para-gardel-trompeta-01.pdf",
+    "slug": "candombe-para-gardel-trompeta-01"
+  },
+  {
+    "instrumento": "trompeta-01",
+    "fileId": "14wnKkpLatt5lOXMH7dzXjbVALGqZHIcE",
+    "fileName": "candombe-para-gardel-cantada-trompeta-01.pdf",
+    "slug": "candombe-para-gardel-cantada-trompeta-01"
+  },
+  {
+    "instrumento": "trompeta-01",
+    "fileId": "14fGBf1AHugC7TN6ntN-do_A0QvQ65pCM",
+    "fileName": "al-espejo-trompeta-01.pdf",
+    "slug": "al-espejo-trompeta-01"
+  },
+  {
+    "instrumento": "trompeta-01",
+    "fileId": "1pDVw1087vpGxtVx66S6Bi_902-iNlOlD",
+    "fileName": "don-t-take-my-coconuts-trompeta-01.pdf",
+    "slug": "don-t-take-my-coconuts-trompeta-01"
+  },
+  {
+    "instrumento": "trompeta-01",
     "fileId": "1_62PZHBEQ4Tbrf44V0F4NtvvtnpUfKWE",
     "fileName": "trenchtown-rock-trompeta-01.pdf",
     "slug": "trenchtown-rock-trompeta-01"
@@ -1285,6 +1405,30 @@
   },
   {
     "instrumento": "trompeta-02",
+    "fileId": "1nRHkrP69VwZ1mol89GJGg2taqZ436peZ",
+    "fileName": "candombe-para-gardel-trompeta-02.pdf",
+    "slug": "candombe-para-gardel-trompeta-02"
+  },
+  {
+    "instrumento": "trompeta-02",
+    "fileId": "1lRLdZVuewjjr4he3maDhnEHgyKmV0jc9",
+    "fileName": "candombe-para-gardel-cantada-trompeta-02.pdf",
+    "slug": "candombe-para-gardel-cantada-trompeta-02"
+  },
+  {
+    "instrumento": "trompeta-02",
+    "fileId": "177W70kQWC6TMcmjyL7jFfib_Wkjc4cIZ",
+    "fileName": "al-espejo-trompeta-02.pdf",
+    "slug": "al-espejo-trompeta-02"
+  },
+  {
+    "instrumento": "trompeta-02",
+    "fileId": "1P2SzNY5z2fmuJjhUX44oHtAXF7Vs1vTJ",
+    "fileName": "don-t-take-my-coconuts-trompeta-02.pdf",
+    "slug": "don-t-take-my-coconuts-trompeta-02"
+  },
+  {
+    "instrumento": "trompeta-02",
     "fileId": "1cEXAv2FpwFkTiDVOGzxZnkr3HmyVVcS1",
     "fileName": "trenchtown-rock-trompeta-02.pdf",
     "slug": "trenchtown-rock-trompeta-02"
@@ -1534,6 +1678,30 @@
     "fileId": "18zX2sXdc5pVbcpuAA6jkwYWe6CdQ6lk5",
     "fileName": "afroexpress-trompeta-02.pdf",
     "slug": "afroexpress-trompeta-02"
+  },
+  {
+    "instrumento": "tuba",
+    "fileId": "1ZE4e1Efpw_NobDNvAc-eBCh5byA1Azek",
+    "fileName": "candombe-para-gardel-tuba.pdf",
+    "slug": "candombe-para-gardel-tuba"
+  },
+  {
+    "instrumento": "tuba",
+    "fileId": "17N-IwtVSF_i_1pgF9kTbs1RjGnl6e6wN",
+    "fileName": "candombe-para-gardel-cantada-tuba.pdf",
+    "slug": "candombe-para-gardel-cantada-tuba"
+  },
+  {
+    "instrumento": "tuba",
+    "fileId": "1QL7bopqiSmkVLHDO073qIsOFe7LfVx6L",
+    "fileName": "al-espejo-tuba.pdf",
+    "slug": "al-espejo-tuba"
+  },
+  {
+    "instrumento": "tuba",
+    "fileId": "1Nk-SLMktM38SY-SuYC-v7tfmG_CpG1XJ",
+    "fileName": "don-t-take-my-coconuts-tuba.pdf",
+    "slug": "don-t-take-my-coconuts-tuba"
   },
   {
     "instrumento": "tuba",

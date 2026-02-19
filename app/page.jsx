@@ -11,9 +11,10 @@ import { OthersSections } from "./components/landing/OthersSections";
 import { Releases } from "./components/landing/Releases";
 import { Navbar } from "./components/Navbar";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
   
 export default function Home() {
+ const [activePlayer, setActivePlayer] = useState(null);
   useEffect(() => {
     const hash = window.location.hash;
     if (hash) {
@@ -30,12 +31,18 @@ export default function Home() {
   return (
     <div className="w-full">
       <Navbar />
-      <HeaderAlbum />
+      <HeaderAlbum 
+        activePlayer={activePlayer}
+        setActivePlayer={setActivePlayer}
+      />
       {/* <Hero /> */}
       {/* <About /> */}
       <About2 />
       <Listen />
-      <Releases />
+       <Releases 
+        activePlayer={activePlayer}
+        setActivePlayer={setActivePlayer}
+      />
       <OthersSections />
       <Gallery />
       <Footer />

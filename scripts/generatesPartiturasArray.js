@@ -66,7 +66,7 @@ const DISCS = {
 
   "Sin Disco": [
     "Amandote",
-    "Candombe pa Gardel",
+    "Candombe para Gardel",
     "Mandanga",
     "Don't take my coconuts",
     "Mama vieja",

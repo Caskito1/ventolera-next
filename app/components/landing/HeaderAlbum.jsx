@@ -15,9 +15,18 @@ const items = [
 ];
 
 
-const HeaderAlbum = () => {
+ const HeaderAlbum = ({ activePlayer, setActivePlayer }) => {
     const [offsetY, setOffsetY] = useState(0);
-    const [isPlaying, setIsPlaying] = useState(false);
+
+  const isPlaying = activePlayer === "album";
+
+  const handleToggle = () => {
+    if (isPlaying) {
+      setActivePlayer(null);
+    } else {
+      setActivePlayer("album");
+    }
+  };
 
 
     // Parallax
@@ -138,7 +147,10 @@ useEffect(() => {
 
   {/* Play centrado */}
   <div className="absolute inset-0 flex items-center justify-center z-20">
-   <AlbumPlayer isPlaying={isPlaying} setIsPlaying={setIsPlaying} />
+ <AlbumPlayer 
+  isPlaying={isPlaying} 
+  onToggle={handleToggle} 
+/>
   </div>
 
 </div>

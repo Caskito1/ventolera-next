@@ -1,14 +1,12 @@
 'use client'
 import { useState } from "react";
 
-export const Releases = () => {
-  const [showVideo, setShowVideo] = useState(false);
-
+export const Releases = ({ activePlayer, setActivePlayer }) => {
+  const isActive = activePlayer === "youtube";
+ 
   const handlePlayClick = () => {
-    console.log("Video clicked");
-    setShowVideo(true);
+    setActivePlayer("youtube");
   };
-
   return (
     <section
       id="audiovisuales"
@@ -25,7 +23,7 @@ export const Releases = () => {
         </p>
 
         <div className="w-full max-w-3xl mt-6 rounded-xl overflow-hidden relative aspect-[16/9]">
-          {showVideo ? (
+            {isActive ? (
             <iframe
               className="w-full h-full"
               src="https://www.youtube.com/embed/st8f5fXpDnE?autoplay=1&rel=0"
