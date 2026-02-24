@@ -7,7 +7,7 @@ export async function GET() {
     process.env.GOOGLE_REDIRECT_URI
   );
 
- const scopes = ["https://www.googleapis.com/auth/drive.file"];
+ const scopes = ["https://www.googleapis.com/auth/drive"];
 
   const url = oauth2Client.generateAuthUrl({
     access_type: "offline", // para que te dé refresh_token
