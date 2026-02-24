@@ -7,6 +7,8 @@ export async function GET() {
     process.env.GOOGLE_REDIRECT_URI
   );
 
+
+  
  const scopes = ["https://www.googleapis.com/auth/drive"];
 
   const url = oauth2Client.generateAuthUrl({
