@@ -47,8 +47,8 @@ const sliderRef = useRef(null);
       img: '/media/gallery/vento.jpg'
     },
     {
-      id: 'cooperativa',
-      title: 'Cooperativa de viviendas',
+      id: 'cooperativas',
+      title: 'Cooperativas de viviendas',
       shortText: 'Convenio con FUCVAM, comunidad y valores cooperativos.',
       text: 'Somos parte de una red de trabajo cooperativo. Gracias a un convenio con FUCVAM, realizamos presentaciones en diferentes cooperativas de viviendas, fortaleciendo los valores cooperativos y llevando nuestra propuesta cultural directamente a los hogares.',
       cta: {
@@ -74,7 +74,7 @@ const sliderRef = useRef(null);
       <div className="max-w-6xl w-full space-y-8 ">
         {/* Título y descripción general */}
         <div className="flex flex-col justify-center items-center">
-          <h2 className=" text-2xl sm:text-3xl font-bold uppercase text-center">Cooperativa</h2>
+          <h2 className=" text-2xl sm:text-3xl font-bold uppercase text-center">Ventolera como Cooperativa</h2>
           <p className="mt-4 text-md text-white/90 text-center max-w-[700px] ">
             Somos parte de una red de trabajo cooperativo. Realizamos actividades culturales y talleres a través de nuestra escuela y convenios con FUCVAM.
           </p>

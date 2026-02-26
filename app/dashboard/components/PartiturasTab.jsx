@@ -88,6 +88,7 @@ export default function PartiturasTab({ userData, favorites, setFavorites }) {
   <UploadPartituraModal
     onClose={() => setShowUploadModal(false)}
     instrumentos={userData.subrol}
+  
   />
 )}
     <div className="flex justify-between items-center mb-4">
@@ -95,7 +96,7 @@ export default function PartiturasTab({ userData, favorites, setFavorites }) {
         {userData.rol === "admin" && (
     <button
       onClick={() => setShowUploadModal(true)}
-      className="w-10 h-10 rounded-full bg-orange-500 text-white text-2xl flex items-center justify-center shadow-lg hover:bg-orange-600 transition"
+      className="cursor-pointer w-10 h-10 rounded-full bg-orange-500 text-white text-2xl flex items-center justify-center shadow-lg hover:bg-orange-600 transition"
     >
       +
     </button>
@@ -105,13 +106,13 @@ export default function PartiturasTab({ userData, favorites, setFavorites }) {
         <div className="mb-4 flex gap-2 items-center ">
           <label>Elegir instrumento:</label>
           <select
-            className="border p-1 rounded"
+            className="border p-1 rounded "
             value={selectedInstrument}
             onChange={(e) => setSelectedInstrument(e.target.value)}
           >
             <option value="todos">Todos</option>
             {userData.subrol.map((inst) => (
-              <option key={inst} value={inst}>
+              <option key={inst} value={inst} >
                 {inst}
               </option>
             ))}
@@ -132,7 +133,7 @@ export default function PartiturasTab({ userData, favorites, setFavorites }) {
 
       <div className="flex gap-2 mb-4">
         <button
-          className={`py-1 px-3 rounded ${
+          className={`py-1 px-3 rounded cursor-pointer ${
             !showFavorites ? "bg-orange-500/80 text-white" : "bg-gray-200"
           }`}
           onClick={() => setShowFavorites(false)}
@@ -140,7 +141,7 @@ export default function PartiturasTab({ userData, favorites, setFavorites }) {
           Todas
         </button>
         <button
-          className={`py-1 px-3 rounded ${
+          className={`py-1 px-3 rounded cursor-pointer ${
             showFavorites ? "bg-orange-500/80 text-white" : "bg-gray-200"
           }`}
           onClick={() => setShowFavorites(true)}
@@ -174,7 +175,7 @@ export default function PartiturasTab({ userData, favorites, setFavorites }) {
                   <button
   onClick={() => toggleFavorite(p.id, p.tema)}
   disabled={!isAvailable}
-  className={`${!isAvailable && "cursor-not-allowed opacity-50"}`}
+  className={`${!isAvailable && "cursor-not-allowed opacity-50 "}`}
 >
   <img
     src={
@@ -186,7 +187,7 @@ export default function PartiturasTab({ userData, favorites, setFavorites }) {
     height={16}
     width={16}
     className={`
-      transition-transform duration-200
+      transition-transform duration-200 cursor-pointer
       ${animatingId === p.id ? "scale-125" : "scale-100"}
       ${favorites.includes(p.id) ? "" : ""}
     `}

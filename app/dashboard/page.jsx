@@ -90,7 +90,7 @@ export default function DashboardPage() {
    {/* ================= SIDEBAR ================= */}
 <aside
   className={`
-    fixed z-30 top-0 left-0 min-h-screen h-[100dvh] w-64 p-4 shadow flex flex-col
+    fixed z-30 top-0 left-0 min-h-screen h-[100dvh] w-72 p-4 shadow flex flex-col
     transform transition-transform duration-300
     ${menuOpen ? "translate-x-0" : "-translate-x-full"}
     lg:translate-x-0
@@ -148,7 +148,7 @@ export default function DashboardPage() {
 
   <button
     onClick={handleLogout}
-    className="mt-auto py-2 px-3 bg-red-500 text-white rounded hover:bg-red-600 transition"
+    className="mt-auto py-2 px-3 bg-red-500 text-white rounded hover:bg-red-600 transition cursor-pointer"
   >
     Cerrar sesión
   </button>
