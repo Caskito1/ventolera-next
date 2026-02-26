@@ -50,7 +50,7 @@ export default function PartiturasTab({ userData, favorites, setFavorites }) {
 
   const isFav = favorites.includes(pdfId);
 
-  // 🔥 Optimistic update
+  // Optimistic update
   if (isFav) {
     setFavorites((prev) => prev.filter((id) => id !== pdfId));
   } else {
