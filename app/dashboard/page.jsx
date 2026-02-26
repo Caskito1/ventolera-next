@@ -7,6 +7,7 @@ import { useState } from "react";
 import PartiturasTab from "./components/PartiturasTab";
 import AdministracionTab from "./components/AdministracionTab";
 import { useUserData } from "../hooks/useUserData";
+import TamborScreen from "./components/TamborScreen";
 
 export default function DashboardPage() {
   const router = useRouter();
@@ -128,7 +129,7 @@ export default function DashboardPage() {
       Partituras
     </button>
 
-    {userData.rol === "admin" && (
+   
       <button
         className={`py-2 px-3 rounded transition-all cursor-pointer ${
           selectedTab === "administracion"
@@ -142,7 +143,7 @@ export default function DashboardPage() {
       >
         Administración
       </button>
-    )}
+    
   </div>
 
   <button
@@ -167,12 +168,19 @@ export default function DashboardPage() {
 
 
           {selectedTab === "partituras" && (
-            <PartiturasTab
-              userData={userData}
-              favorites={favorites}
-              setFavorites={setFavorites}
-            />
-          )}
+  <>
+    {userData.rol === "musico" &&
+    userData.instrumento === "tambor" ? (
+      <TamborScreen userData={userData} />
+    ) : (
+      <PartiturasTab
+        userData={userData}
+        favorites={favorites}
+        setFavorites={setFavorites}
+      />
+    )}
+  </>
+)}
 
           {selectedTab === "administracion" && (
             <AdministracionTab userData={userData} />
