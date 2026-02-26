@@ -3,7 +3,6 @@ export const runtime = "nodejs";
 import { google } from "googleapis";
 import { NextResponse } from "next/server";
 import { Readable } from "stream";
-import admin from "firebase-admin";
 
 /* ===============================
    📁 Carpetas por instrumento
@@ -18,30 +17,6 @@ const INSTRUMENT_FOLDERS = {
   "tuba": "1TNm8cuKErsg4aRKRdyc1WV9qPOYLys9l",
 };
 
-/* ===============================
-   🔥 INIT FIREBASE ADMIN
-================================ */
-if (!admin.apps.length) {
-  const {
-    FIREBASE_PROJECT_ID,
-    FIREBASE_CLIENT_EMAIL,
-    FIREBASE_PRIVATE_KEY,
-  } = process.env;
-
-  if (!FIREBASE_PROJECT_ID || !FIREBASE_CLIENT_EMAIL || !FIREBASE_PRIVATE_KEY) {
-    throw new Error("Missing Firebase environment variables");
-  }
-
-  admin.initializeApp({
-    credential: admin.credential.cert({
-      projectId: FIREBASE_PROJECT_ID,
-      clientEmail: FIREBASE_CLIENT_EMAIL,
-      privateKey: FIREBASE_PRIVATE_KEY.replace(/\\n/g, "\n"),
-    }),
-  });
-}
-
-const db = admin.firestore();
 /* ===============================
    🔤 Slugify
 ================================ */
@@ -59,6 +34,27 @@ function slugify(text) {
 ================================ */
 export async function POST(req) {
   try {
+    /* 🔥 Lazy import firebase-admin */
+    const admin = (await import("firebase-admin")).default;
+
+    if (!admin.apps.length) {
+      const {
+        FIREBASE_PROJECT_ID,
+        FIREBASE_CLIENT_EMAIL,
+        FIREBASE_PRIVATE_KEY,
+      } = process.env;
+
+      admin.initializeApp({
+        credential: admin.credential.cert({
+          projectId: FIREBASE_PROJECT_ID,
+          clientEmail: FIREBASE_CLIENT_EMAIL,
+          privateKey: FIREBASE_PRIVATE_KEY?.replace(/\\n/g, "\n"),
+        }),
+      });
+    }
+
+    const db = admin.firestore();
+
     const formData = await req.formData();
 
     const file = formData.get("file");
@@ -66,9 +62,6 @@ export async function POST(req) {
     const instrumento = formData.get("instrumento");
     const disco = formData.get("disco") || "Sin Disco";
 
-    /* ===============================
-       🔎 Validaciones
-    ================================ */
     if (!file || !tema || !instrumento) {
       return NextResponse.json(
         { error: "Faltan datos" },
@@ -85,9 +78,7 @@ export async function POST(req) {
       );
     }
 
-    /* ===============================
-       🔐 Google OAuth2
-    ================================ */
+    /* 🔐 Google OAuth2 */
     const oauth2Client = new google.auth.OAuth2(
       process.env.GOOGLE_CLIENT_ID,
       process.env.GOOGLE_CLIENT_SECRET,
@@ -100,9 +91,6 @@ export async function POST(req) {
 
     const drive = google.drive({ version: "v3", auth: oauth2Client });
 
-    /* ===============================
-       📄 Preparar archivo
-    ================================ */
     const arrayBuffer = await file.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
     const stream = Readable.from(buffer);
@@ -110,11 +98,6 @@ export async function POST(req) {
     const slug = `${slugify(tema)}-${instrumento}`;
     const fileName = `${slug}.pdf`;
 
-    console.log("📤 Subiendo a Drive:", fileName);
-
-    /* ===============================
-       ☁ Subir a Drive
-    ================================ */
     const driveResponse = await drive.files.create({
       requestBody: {
         name: fileName,
@@ -129,11 +112,6 @@ export async function POST(req) {
 
     const driveFileId = driveResponse.data.id;
 
-    console.log("✅ Archivo subido:", driveFileId);
-
-    /* ===============================
-       🔥 Guardar en Firestore
-    ================================ */
     const now = new Date().toISOString();
 
     const partituraData = {
@@ -147,16 +125,10 @@ export async function POST(req) {
       updatedAt: now,
     };
 
-    await db
-      .collection("partituras")
-      .doc(slug)
-      .set(partituraData, { merge: true });
+    await db.collection("partituras").doc(slug).set(partituraData, {
+      merge: true,
+    });
 
-    console.log("🔥 Guardado en Firestore:", slug);
-
-    /* ===============================
-       📦 Response
-    ================================ */
     return NextResponse.json({
       success: true,
       ...partituraData,
