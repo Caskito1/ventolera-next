@@ -117,6 +117,7 @@ export default function PartiturasTab({ userData, favorites, setFavorites }) {
               </option>
             ))}
           </select>
+          
         </div>
         
       )}
