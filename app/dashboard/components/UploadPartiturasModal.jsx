@@ -2,7 +2,11 @@
 
 import { useEffect, useState } from "react";
 
-export default function UploadPartituraModal({ onClose, instrumentos = [] }) {
+export default function UploadPartituraModal({  
+  onClose,
+  instrumentos,
+  onUploadSuccess }) {
+
   const [step, setStep] = useState(1);
   const [tema, setTema] = useState("");
   const [selectedInstruments, setSelectedInstruments] = useState([]);
@@ -95,13 +99,14 @@ export default function UploadPartituraModal({ onClose, instrumentos = [] }) {
   /* ===============================
      🚀 Submit final
   ================================ */
-  const handleSubmit = async () => {
+const handleSubmit = async () => {
   if (Object.keys(files).length !== selectedInstruments.length) {
     setError("Faltan archivos por cargar");
     return;
   }
 
-  setStep(4); 
+  setError("");
+  setStep(4);
   setUploadStatus("uploading");
 
   try {
@@ -116,24 +121,38 @@ export default function UploadPartituraModal({ onClose, instrumentos = [] }) {
         body: formData,
       });
 
-      if (!res.ok) throw new Error();
+      const data = await res.json();
+
+      if (!res.ok || !data.success) {
+        throw new Error("Upload failed");
+      }
     }
 
     setUploadStatus("success");
+
+    // 🔥 Esto va fuera del try principal
+    if (onUploadSuccess) {
+      try {
+        await onUploadSuccess();
+      } catch (err) {
+        console.error("Error refrescando listado:", err);
+      }
+    }
+
   } catch (err) {
+    console.error("Upload error:", err);
     setUploadStatus("error");
   }
 };
 
-useEffect(() => {
-  if (uploadStatus === "success") {
-    const timer = setTimeout(() => {
-      onClose();
-    }, 1500);
 
-    return () => clearTimeout(timer);
-  }
-}, [uploadStatus]);
+
+const truncateFileName = (name, maxLength = 20) => {
+  if (!name) return "";
+  return name.length > maxLength
+    ? name.slice(0, maxLength) + "..."
+    : name;
+};
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
@@ -142,7 +161,7 @@ useEffect(() => {
        onClick={uploadStatus === "uploading" ? undefined : onClose}
       />
 
-      <div className="relative bg-white w-full max-w-md rounded-xl shadow-xl p-6 z-10">
+     <div className="relative bg-white sm:w-full w-[90%] max-w-md rounded-xl shadow-xl p-6 z-10 min-h-[510px] flex flex-col ">
  
         {/* Header */}
      {step !== 4 && (
@@ -150,9 +169,9 @@ useEffect(() => {
     {step > 1 && (
       <button
         onClick={prevStep}
-        className="absolute left-0 p-2 rounded-full hover:bg-gray-100 transition"
+        className="absolute left-0 p-2 pl-0 rounded-full transition cursor-pointer"
       >
-        ←
+        <img src="/media/icons/arrow-left-black.webp" alt="back-icon"  width={32} />
       </button>
     )}
 
@@ -162,30 +181,26 @@ useEffect(() => {
 
     <button
       onClick={onClose}
-      className="absolute right-0 p-2 rounded-full hover:bg-gray-100 transition"
+      className="absolute right-0 p-2 rounded-full transition cursor-pointer"
     >
-      ✕
+      <img src="/media/icons/close.webp" alt="" width={16}/>
     </button>
   </div>
 )}
-
+ <div className="flex-1 flex flex-col justify-center">
         {/* STEP 1 */}
         {step === 1 && (
           <div className="space-y-4">
+            <p className="text-center">Ingresá el nombre del tema</p>
             <input
               type="text"
               value={tema}
               onChange={(e) => setTema(e.target.value)}
               placeholder="Nombre del tema"
-              className="w-full border rounded-lg p-2"
+              className="w-full border rounded-lg p-2 text-center"
             />
 
-            <button
-              onClick={nextStep}
-              className="w-full bg-orange-500 text-white py-2 rounded-lg"
-            >
-              Siguiente →
-            </button>
+          
           </div>
         )}
 
@@ -215,76 +230,76 @@ useEffect(() => {
 </div>
            
 
-            <div className="flex justify-center pt-4">
-             
-
-              <button
-                onClick={nextStep}
-                className="px-4 py-2 bg-orange-500 text-white rounded-lg"
-              >
-                Siguiente →
-              </button>
-            </div>
+          
           </div>
         )}
 
         {/* STEP 3 */}
         {step === 3 && (
           <div className="space-y-4">
-            {selectedInstruments.map((inst) => (
-              <div
-                key={inst}
-                className="bg-gray-50 border rounded-lg p-3"
-              >
-                <p className="font-medium mb-2">{inst}</p>
+          {selectedInstruments.map((inst) => {
+  const hasFile = !!files[inst];
 
-            <div className="flex flex-col gap-2">
-  <label
-    htmlFor={`file-${inst}`}
-    className="inline-block w-fit px-4 py-2 bg-orange-500 text-white rounded-lg cursor-pointer hover:bg-orange-600 transition"
-  >
-    Seleccionar archivo
-  </label>
+  return (
+    <div
+      key={inst}
+      className="bg-gray-50 border rounded-lg pl-4 py-2 "
+    >
+      <div className="grid grid-cols-[1fr_50px] items-center gap-4">
+        
+        {/* COLUMNA IZQUIERDA (TEXTO) */}
+        <div className="flex flex-col">
+          <p className="font-medium uppercase">
+            {inst}
+          </p>
 
-  <input
-    id={`file-${inst}`}
-    type="file"
-    accept="application/pdf"
-    onChange={(e) => handleFileChange(inst, e)}
-    className="hidden"
-  />
+          {hasFile ? (
+            <p className="text-sm text-gray-600 truncate">
+             {truncateFileName(files[inst].name)}
+            </p>
+          ) : (
+            <p className="text-sm text-gray-400">
+              No hay archivo seleccionado
+            </p>
+          )}
+        </div>
 
-  {files[inst] ? (
-    <div className="flex justify-between items-center text-sm bg-white border rounded-lg px-3 py-2">
-      <span className="truncate">{files[inst].name}</span>
-      <button
-        onClick={() => removeFile(inst)}
-        className="text-red-500 hover:text-red-700"
-      >
-        ✕
-      </button>
+        {/* COLUMNA DERECHA (ICONO) */}
+        <div className="flex justify-center items-center h-full">
+          {hasFile ? (
+            <button
+              onClick={() => removeFile(inst)}
+              className="text-red-500 hover:scale-110 transition"
+            >
+              ✕
+            </button>
+          ) : (
+            <label
+              htmlFor={`file-${inst}`}
+              className="cursor-pointer hover:scale-105 transition"
+            >
+              <img
+                src="/media/icons/upload-orange.webp"
+                alt="upload"
+                width={24}
+              />
+            </label>
+          )}
+        </div>
+      </div>
+
+      <input
+        id={`file-${inst}`}
+        type="file"
+        accept="application/pdf"
+        onChange={(e) => handleFileChange(inst, e)}
+        className="hidden"
+      />
     </div>
-  ) : (
-    <p className="text-xs text-gray-400">
-      No hay archivo seleccionado
-    </p>
-  )}
-</div>
+  );
+})}
 
-              </div>
-            ))}
-
-           <div className="flex justify-center pt-4">
-             
-
-             <button
-  onClick={handleSubmit}
-  disabled={uploadStatus === "uploading"}
-  className="px-4 py-2 bg-orange-500 text-white rounded-lg disabled:opacity-50 disabled:cursor-not-allowed"
->
-  {uploadStatus === "uploading" ? "Subiendo..." : "Subir Partituras"}
-</button>
-            </div>
+          
           </div>
         )}
 
@@ -292,52 +307,76 @@ useEffect(() => {
           <p className="text-red-500 text-sm mt-4">{error}</p>
         )}
         {/* STEP 4 */}
-{step === 4 && (
-  <div className="flex flex-col items-center justify-center py-10">
+        {step === 4 && (
+          <div className="flex flex-col items-center justify-center py-10">
 
-    {uploadStatus === "uploading" && (
-      <>
-       <div className="w-10 h-10 border-4 border-gray-300 border-t-orange-500 rounded-full animate-spin" />
-        <p className="mt-4 text-sm text-gray-600">
-          Subiendo partituras...
-        </p>
-      </>
-    )}
+            {uploadStatus === "uploading" && (
+              <>
+              <div className="w-10 h-10 border-4 border-gray-300 border-t-orange-500 rounded-full animate-spin" />
+                <p className="mt-4 text-sm text-gray-600">
+                  Subiendo partituras...
+                </p>
+              </>
+            )}
 
-    {uploadStatus === "success" && (
-      <>
-        <div className="text-4xl text-green-600">✔</div>
-        <p className="mt-3 font-medium text-green-600 text-center">
-          Se cargó el tema correctamente
-        </p>
+            {uploadStatus === "success" && (
+              <>
+                <div className="text-4xl text-green-600">✔</div>
+                <p className="mt-3 font-medium text-green-600 text-center">
+                  Se cargó el tema correctamente
+                </p>
 
+                <button
+                  onClick={onClose}
+                  className="mt-5 px-4 py-2 bg-green-600 text-white rounded-lg"
+                >
+                  Cerrar
+                </button>
+              </>
+            )}
+
+            {uploadStatus === "error" && (
+              <>
+                <div className="text-4xl text-red-600">✖</div>
+                <p className="mt-3 font-medium text-red-600 text-center">
+                  Error al subir
+                </p>
+
+                <button
+                  onClick={() => setStep(3)}
+                  className="mt-5 px-4 py-2 bg-orange-500 text-white rounded-lg"
+                >
+                  Volver
+                </button>
+              </>
+            )}
+
+          </div>
+        )}
+      </div>
+      {step !== 4 && (
+    <div className="pt-4">
+      {step < 3 && (
         <button
-          onClick={onClose}
-          className="mt-5 px-4 py-2 bg-green-600 text-white rounded-lg"
+          onClick={nextStep}
+          className="w-full bg-orange-500 text-white py-2 rounded-lg flex justify-center gap-2 cursor-pointer"
         >
-          Cerrar
+          Siguiente <img src="media/icons/arrow-right-white.webp" alt="next-icon" width={24} />
         </button>
-      </>
-    )}
+      )}
 
-    {uploadStatus === "error" && (
-      <>
-        <div className="text-4xl text-red-600">✖</div>
-        <p className="mt-3 font-medium text-red-600 text-center">
-          Error al subir
-        </p>
-
+      {step === 3 && (
         <button
-          onClick={() => setStep(3)}
-          className="mt-5 px-4 py-2 bg-orange-500 text-white rounded-lg"
+          onClick={handleSubmit}
+          disabled={uploadStatus === "uploading"}
+          className="w-full bg-orange-500 text-white py-2 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
         >
-          Volver
+          {uploadStatus === "uploading" ? "Subiendo..." : "Subir Partituras"}
         </button>
-      </>
-    )}
+      )}
+    </div>
+  )}
 
-  </div>
-)}
       </div>
     </div>
   );
