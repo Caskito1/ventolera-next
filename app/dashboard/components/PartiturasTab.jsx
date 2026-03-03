@@ -5,7 +5,7 @@ import { usePartituras } from "@/app/hooks/usePartituras";
 import UploadPartituraModal from "./UploadPartiturasModal";
 
 export default function PartiturasTab({ userData, favorites, setFavorites }) {
-  const { partituras, loading } = usePartituras(userData?.subrol);
+  const { partituras, loading, refetch } = usePartituras(userData?.subrol);
 
   const [searchTerm, setSearchTerm] = useState("");
   const [showFavorites, setShowFavorites] = useState(false);
@@ -88,6 +88,10 @@ export default function PartiturasTab({ userData, favorites, setFavorites }) {
   <UploadPartituraModal
     onClose={() => setShowUploadModal(false)}
     instrumentos={userData.subrol}
+    onUploadSuccess={async () => {
+      await refetch();      
+      setShowUploadModal(false); 
+    }}
   
   />
 )}

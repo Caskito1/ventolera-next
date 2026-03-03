@@ -90,13 +90,14 @@ export default function DashboardPage() {
    {/* ================= SIDEBAR ================= */}
 <aside
   className={`
-    fixed z-30 top-0 left-0 min-h-screen h-[100dvh] w-72 p-4 shadow flex flex-col
+    fixed z-50 top-0 left-0 w-72 p-4 shadow flex flex-col
     transform transition-transform duration-300
     ${menuOpen ? "translate-x-0" : "-translate-x-full"}
     lg:translate-x-0
     bg-white text-gray-900
     lg:bg-white/20 lg:text-white lg:backdrop-blur-md
   `}
+  style={{ height: "100svh" }}
 >
   {/* BOTÓN CERRAR (solo mobile) */}
   <button
