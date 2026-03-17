@@ -178,7 +178,8 @@ export default function DashboardPage() {
           {selectedTab === "partituras" && (
   <>
     {userData.rol === "musico" &&
-    userData.instrumento === "tambor" ? (
+    userData.instrumento === "tambor" &&
+    userData.email !== "ysimbrelo@gmail.com" ? (
       <TamborScreen userData={userData} />
     ) : (
       <PartiturasTab
