@@ -8,6 +8,9 @@ import PartiturasTab from "./components/PartiturasTab";
 import AdministracionTab from "./components/AdministracionTab";
 import { useUserData } from "../hooks/useUserData";
 import TamborScreen from "./components/TamborScreen";
+import { canAccess } from "@/lib/permissions";
+import { MODULES } from "@/lib/modules";
+import RecibosScreen from "./components/RecibosScreen";
 
 export default function DashboardPage() {
   const router = useRouter();
@@ -116,34 +119,38 @@ export default function DashboardPage() {
   <p className="text-sm mb-4 uppercase">{userData.instrumento}</p>
 
   <div className="flex flex-col gap-2 mb-4">
-    <button
-      className={`py-2 px-3 rounded transition-all cursor-pointer ${
-        selectedTab === "partituras"
-          ? "bg-orange-500/80 text-white font-semibold shadow-md"
-          : "bg-white text-gray-700"
-      }`}
-      onClick={() => {
-        setSelectedTab("partituras");
-        setMenuOpen(false);
-      }}
-    >
-      Partituras
-    </button>
+   {canAccess(userData, MODULES.PARTITURAS) && (
+  <button
+    className={`py-2 px-3 rounded ${
+      selectedTab === "partituras"
+        ? "bg-orange-500/80 text-white font-semibold shadow-md"
+        : "bg-white text-gray-700"
+    }`}
+    onClick={() => {
+      setSelectedTab("partituras");
+      setMenuOpen(false);
+    }}
+  >
+    Partituras
+  </button>
+)}
 
    
-      <button
-        className={`py-2 px-3 rounded transition-all cursor-pointer ${
-          selectedTab === "administracion"
-            ? "bg-orange-500/80 text-white font-semibold shadow-md"
-            : "bg-white text-gray-700"
-        }`}
-        onClick={() => {
-          setSelectedTab("administracion");
-          setMenuOpen(false);
-        }}
-      >
-        Administración
-      </button>
+  {canAccess(userData, MODULES.RECIBOS) && (
+  <button
+    className={`py-2 px-3 rounded ${
+      selectedTab === "administracion"
+        ? "bg-orange-500/80 text-white font-semibold shadow-md"
+        : "bg-white text-gray-700"
+    }`}
+    onClick={() => {
+      setSelectedTab("administracion");
+      setMenuOpen(false);
+    }}
+  >
+    Recibos de sueldo
+  </button>
+)}
     
   </div>
 
@@ -184,7 +191,8 @@ export default function DashboardPage() {
 )}
 
           {selectedTab === "administracion" && (
-            <AdministracionTab userData={userData} />
+            <RecibosScreen />
+            // <AdministracionTab userData={userData} />
           )}
         </div>
         </div>
