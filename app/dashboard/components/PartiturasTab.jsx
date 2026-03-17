@@ -3,6 +3,8 @@ import { doc, setDoc, deleteDoc } from "firebase/firestore";
 import { auth, db } from "@/firebase";
 import { usePartituras } from "@/app/hooks/usePartituras";
 import UploadPartituraModal from "./UploadPartiturasModal";
+import { canWrite } from "@/lib/permissions";
+import { MODULES } from "@/lib/modules";
 
 export default function PartiturasTab({ userData, favorites, setFavorites }) {
   const { partituras, loading, refetch } = usePartituras(userData?.subrol);
@@ -97,7 +99,7 @@ export default function PartiturasTab({ userData, favorites, setFavorites }) {
 )}
     <div className="flex justify-between items-center mb-4">
       <h2 className="text-2xl font-bold mb-4">Partituras</h2>
-        {userData.rol === "admin" && (
+       {canWrite(userData, MODULES.PARTITURAS) && (
     <button
       onClick={() => setShowUploadModal(true)}
       className="cursor-pointer w-10 h-10 rounded-full bg-orange-500 text-white text-2xl flex items-center justify-center shadow-lg hover:bg-orange-600 transition"
@@ -106,7 +108,7 @@ export default function PartiturasTab({ userData, favorites, setFavorites }) {
     </button>
   )}
  </div>
-      {(userData.rol === "admin" || userData.subrol.length > 1) && (
+      {(userData.subrol.length > 1) && (
         <div className="mb-4 flex gap-2 items-center ">
           <label>Elegir instrumento:</label>
           <select
@@ -121,13 +123,9 @@ export default function PartiturasTab({ userData, favorites, setFavorites }) {
               </option>
             ))}
           </select>
-          
         </div>
-        
       )}
      
-      
-
       <input
         type="text"
         placeholder="Buscar partituras..."
