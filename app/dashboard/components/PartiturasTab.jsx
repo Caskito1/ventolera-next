@@ -17,63 +17,62 @@ export default function PartiturasTab({ userData, favorites, setFavorites }) {
   const [showUploadModal, setShowUploadModal] = useState(false);
 
   const handleDownload = async (fileId, fileName) => {
-  try {
-    setDownloadingId(fileId);
+    try {
+      setDownloadingId(fileId);
 
-    const response = await fetch(
-      `/api/downloadpdf?fileId=${fileId}&download=1`
-    );
+      const response = await fetch(
+        `/api/downloadpdf?fileId=${fileId}&download=1`,
+      );
 
-    const blob = await response.blob();
+      const blob = await response.blob();
 
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `${fileName}.pdf`;
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    window.URL.revokeObjectURL(url);
-  } catch (error) {
-    console.error("Error descargando:", error);
-  } finally {
-    setDownloadingId(null);
-  }
-};
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `${fileName}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error("Error descargando:", error);
+    } finally {
+      setDownloadingId(null);
+    }
+  };
 
   const toggleFavorite = async (pdfId, pdfName) => {
-  const favRef = doc(
-    db,
-    "usuarios",
-    auth.currentUser.uid,
-    "favoritos",
-    pdfId
-  );
+    const favRef = doc(
+      db,
+      "usuarios",
+      auth.currentUser.uid,
+      "favoritos",
+      pdfId,
+    );
 
-  const isFav = favorites.includes(pdfId);
+    const isFav = favorites.includes(pdfId);
 
-  // 🔥 Optimistic update
-  if (isFav) {
-    setFavorites((prev) => prev.filter((id) => id !== pdfId));
-  } else {
-    setFavorites((prev) => [...prev, pdfId]);
-  }
-
-  // Activar animación
-  setAnimatingId(pdfId);
-  setTimeout(() => setAnimatingId(null), 300);
-
-  try {
+    // 🔥 Optimistic update
     if (isFav) {
-      await deleteDoc(favRef);
+      setFavorites((prev) => prev.filter((id) => id !== pdfId));
     } else {
-      await setDoc(favRef, { name: pdfName, addedAt: new Date() });
+      setFavorites((prev) => [...prev, pdfId]);
     }
-  } catch (error) {
-    console.error("Error favorito:", error);
-  }
-};
 
+    // Activar animación
+    setAnimatingId(pdfId);
+    setTimeout(() => setAnimatingId(null), 300);
+
+    try {
+      if (isFav) {
+        await deleteDoc(favRef);
+      } else {
+        await setDoc(favRef, { name: pdfName, addedAt: new Date() });
+      }
+    } catch (error) {
+      console.error("Error favorito:", error);
+    }
+  };
 
   const filteredPDFs = partituras
     .filter((p) => p.tema.toLowerCase().includes(searchTerm.toLowerCase()))
@@ -86,29 +85,28 @@ export default function PartiturasTab({ userData, favorites, setFavorites }) {
 
   return (
     <>
-    {showUploadModal && (
-  <UploadPartituraModal
-    onClose={() => setShowUploadModal(false)}
-    instrumentos={userData.subrol}
-    onUploadSuccess={async () => {
-      await refetch();      
-      setShowUploadModal(false); 
-    }}
-  
-  />
-)}
-    <div className="flex justify-between items-center mb-4">
-      <h2 className="text-2xl font-bold mb-4">Partituras</h2>
-       {canWrite(userData, MODULES.PARTITURAS) && (
-    <button
-      onClick={() => setShowUploadModal(true)}
-      className="cursor-pointer w-10 h-10 rounded-full bg-orange-500 text-white text-2xl flex items-center justify-center shadow-lg hover:bg-orange-600 transition"
-    >
-      +
-    </button>
-  )}
- </div>
-      {(userData.subrol.length > 1) && (
+      {showUploadModal && (
+        <UploadPartituraModal
+          onClose={() => setShowUploadModal(false)}
+          instrumentos={userData.subrol}
+          onUploadSuccess={async () => {
+            await refetch();
+            setShowUploadModal(false);
+          }}
+        />
+      )}
+      <div className="flex justify-between items-center mb-4">
+        <h2 className="text-2xl font-bold mb-4">Partituras</h2>
+        {canWrite(userData, MODULES.PARTITURAS) && (
+          <button
+            onClick={() => setShowUploadModal(true)}
+            className="cursor-pointer w-10 h-10 rounded-full bg-orange-500 text-white text-2xl flex items-center justify-center shadow-lg hover:bg-orange-600 transition"
+          >
+            +
+          </button>
+        )}
+      </div>
+      {userData.subrol.length > 1 && (
         <div className="mb-4 flex gap-2 items-center ">
           <label>Elegir instrumento:</label>
           <select
@@ -118,14 +116,14 @@ export default function PartiturasTab({ userData, favorites, setFavorites }) {
           >
             <option value="todos">Todos</option>
             {userData.subrol.map((inst) => (
-              <option key={inst} value={inst} >
+              <option key={inst} value={inst}>
                 {inst}
               </option>
             ))}
           </select>
         </div>
       )}
-     
+
       <input
         type="text"
         placeholder="Buscar partituras..."
@@ -158,76 +156,89 @@ export default function PartiturasTab({ userData, favorites, setFavorites }) {
       ) : filteredPDFs.length === 0 ? (
         <p>No hay partituras disponibles.</p>
       ) : (
-        <ul className="space-y-2">
-          {filteredPDFs.map((p) => {
-            const isAvailable = !!p.driveFileId;
+     <ul className="space-y-2">
+  {filteredPDFs.map((p) => {
+    const isAvailable = !!p.driveFileId;
 
-            return (
-              <li
-                key={p.id}
-                className={`flex justify-between items-center border p-3 rounded transition
-          ${isAvailable ? "bg-white" : "bg-gray-100 opacity-60"}
+    return (
+      <li
+        key={p.id}
+        onClick={() => {
+          if (isAvailable) {
+            handleDownload(p.driveFileId, p.tema);
+          }
+        }}
+        className={`flex justify-between items-center border p-3 rounded transition hover:bg-gray-50 cursor-pointer
+          ${isAvailable ? "bg-white" : "bg-gray-100 opacity-60 cursor-not-allowed"}
         `}
-              >
-                <span className={`${!isAvailable && "text-gray-500"}`}>
-                  {p.tema} ({p.instrumento})
-                </span>
+      >
+        <div className="flex gap-3 items-center ">
+          {/* ⭐ FAVORITO */}
+          <button
+            onClick={(e) => {
+              e.stopPropagation(); // 👈 CLAVE
+              toggleFavorite(p.id, p.tema);
+            }}
+            disabled={!isAvailable}
+            className={`${!isAvailable && "cursor-not-allowed opacity-50"}`}
+          >
+            <img
+              src={
+                favorites.includes(p.id)
+                  ? "/media/icons/star-yellow.webp"
+                  : "/media/icons/star.webp"
+              }
+              alt="Favorito"
+              height={16}
+              width={16}
+              className={`
+                transition-transform duration-200
+                ${animatingId === p.id ? "scale-125" : "scale-100"}
+              `}
+            />
+          </button>
 
-                <div className="flex gap-3 items-center ">
-                  {/* ⭐ FAVORITO */}
-                  <button
-  onClick={() => toggleFavorite(p.id, p.tema)}
-  disabled={!isAvailable}
-  className={`${!isAvailable && "cursor-not-allowed opacity-50 "}`}
->
-  <img
-    src={
-      favorites.includes(p.id)
-        ? "/media/icons/star-yellow.webp"
-        : "/media/icons/star.webp"
-    }
-    alt="Favorito"
-    height={16}
-    width={16}
-    className={`
-      transition-transform duration-200 cursor-pointer
-      ${animatingId === p.id ? "scale-125" : "scale-100"}
-      ${favorites.includes(p.id) ? "" : ""}
-    `}
-  />
-</button>
+          <span className={`${!isAvailable && "text-gray-500"}`}>
+            {p.tema} ({p.instrumento})
+          </span>
+        </div>
 
-
-                  {/* ⬇ DESCARGA */}
-                  {isAvailable ? (
-                    <button
-  onClick={() => handleDownload(p.driveFileId, p.tema)}
-  disabled={downloadingId === p.driveFileId}
-  className="flex items-center justify-center w-6 h-6"
->
-  {downloadingId === p.driveFileId ? (
-    <div className="w-4 h-4 border-2 border-gray-400 border-t-orange-600 rounded-full animate-spin" />
-  ) : (
-    <img
-      src="/media/icons/download.webp"
-      height={20}
-      width={20}
-      className="cursor-pointer"
-    />
-  )}
-</button>
-                  ) : (
-                    <div className="flex items-center gap-1 text-gray-400 cursor-not-allowed">
-                        <img src="/media/icons/block.webp" alt="Star Selected" height={16} width={16} />
-                    </div>
-                  )}
-                </div>
-              </li>
-            );
-          })}
-        </ul>
+        <div className="flex gap-3 items-center ">
+          {/* ⬇ DESCARGA */}
+          {isAvailable ? (
+            <button
+              onClick={(e) => {
+                e.stopPropagation(); // 👈 también acá por las dudas
+                handleDownload(p.driveFileId, p.tema);
+              }}
+              disabled={downloadingId === p.driveFileId}
+              className="flex items-center justify-center w-6 h-6"
+            >
+              {downloadingId === p.driveFileId ? (
+                <div className="w-4 h-4 border-2 border-gray-400 border-t-orange-600 rounded-full animate-spin" />
+              ) : (
+                <img
+                  src="/media/icons/download.webp"
+                  height={20}
+                  width={20}
+                />
+              )}
+            </button>
+          ) : (
+            <div className="flex items-center gap-1 text-gray-400 cursor-not-allowed">
+              <img
+                src="/media/icons/block.webp"
+                height={16}
+                width={16}
+              />
+            </div>
+          )}
+        </div>
+      </li>
+    );
+  })}
+</ul>
       )}
-     
     </>
   );
 }

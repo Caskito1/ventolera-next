@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function UploadMasivoTab({ onClose, onUploaded }) {
 
@@ -10,7 +10,52 @@ export default function UploadMasivoTab({ onClose, onUploaded }) {
   const [periodo, setPeriodo] = useState("");
   const [summary, setSummary] = useState(null);
   const [overwriteModal, setOverwriteModal] = useState(null);
+  const [progress, setProgress] = useState({
+    current: 0,
+    total: 0
+  });
 
+// Meses en select 
+const getLastClosedMonths = () => {
+  const now = new Date();
+
+  // arrancamos desde el mes anterior
+  let year = now.getFullYear();
+  let month = now.getMonth(); // 👈 OJO: ya viene -1
+
+  const monthNames = [
+    "Enero", "Febrero", "Marzo", "Abril",
+    "Mayo", "Junio", "Julio", "Agosto",
+    "Septiembre", "Octubre", "Noviembre", "Diciembre"
+  ];
+
+  const result = [];
+
+  for (let i = 0; i < 3; i++) {
+
+    if (month === 0) {
+      month = 12;
+      year--;
+    }
+
+    const value = `${year}-${String(month).padStart(2, "0")}`;
+
+    result.push({
+      value,
+      label: `${monthNames[month - 1]} ${year}`
+    });
+
+    month--;
+  }
+
+  return result;
+};
+const availableMonths = getLastClosedMonths();
+useEffect(() => {
+  if (availableMonths.length) {
+    setPeriodo(availableMonths[0].value);
+  }
+}, []);
 // Sobreescribir duplicados
   const askOverwrite = (duplicados) => {
   return new Promise((resolve) => {
@@ -136,7 +181,10 @@ const handleUpload = async () => {
   try {
 
     setUploading(true);
-
+    setProgress({
+      current: 0,
+      total: files.length
+    });
     const duplicados = [];
 
     /* ========================
@@ -187,7 +235,7 @@ const handleUpload = async () => {
     /* ========================
        SUBIR ARCHIVOS
     ======================== */
-
+    let count = 0;
     for (const item of files) {
 
       if (item.status === "error") continue;
@@ -218,6 +266,12 @@ const handleUpload = async () => {
         body: formData,
       });
 
+      count++;
+      setProgress(prev => ({
+        ...prev,
+        current: count
+      }));
+
       uploaded++;
       item.status = "uploaded";
 
@@ -241,6 +295,12 @@ const handleUpload = async () => {
 
   }
 
+};
+
+
+const truncateFileName = (name, maxLength = 15) => {
+  if (name.length <= maxLength) return name;
+  return name.slice(0, maxLength) + "...";
 };
   /* ===============================
      PANTALLA RESULTADO
@@ -334,17 +394,18 @@ if (summary) {
 
         <select
           value={periodo}
-          onChange={(e)=>setPeriodo(e.target.value)}
+          onChange={(e) => setPeriodo(e.target.value)}
           className="w-full border rounded p-2"
         >
           <option value="">Seleccionar mes</option>
-          <option value="2026-01">Enero 2026</option>
-          <option value="2026-02">Febrero 2026</option>
-          <option value="2026-03">Marzo 2026</option>
+
+          {availableMonths.map((m) => (
+            <option key={m.value} value={m.value}>
+              {m.label}
+            </option>
+          ))}
         </select>
-
       </div>
-
       {/* DROP ZONE */}
 
       <div
@@ -401,7 +462,7 @@ if (summary) {
               <div className="flex justify-between items-center">
 
                 <span className="truncate font-medium">
-                  {item.file.name}
+                {truncateFileName(item.file.name)}
                 </span>
 
                 <button
@@ -438,7 +499,7 @@ if (summary) {
               )}
 
               {item.status==="uploaded" && (
-                <span className="text-blue-600">
+                <span className="text-orange-600">
                   cargado ✔
                 </span>
               )}
@@ -453,30 +514,43 @@ if (summary) {
 
       {/* BOTONES */}
 
-      <div className="flex justify-end gap-2 mt-4">
+  <div className="flex justify-center gap-2 mt-4">
 
-        <button
-          onClick={onClose}
-          className="px-4 py-2 bg-gray-200 rounded"
-        >
-          Cancelar
-        </button>
 
-        <button
-          onClick={handleUpload}
-          disabled={uploading || files.length===0}
-          className="px-4 py-2 bg-orange-500 text-white rounded hover:bg-orange-600 flex items-center gap-2"
-        >
+  {!uploading ? (
 
-          {uploading && (
-            <div className="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin"/>
-          )}
+    <button
+      onClick={handleUpload}
+      disabled={files.length === 0}
+      className="px-4 py-2 bg-orange-500 text-white rounded hover:bg-orange-600"
+    >
+      Subir archivos
+    </button>
 
-          {uploading ? "Subiendo..." : "Subir archivos"}
+  ) : (
 
-        </button>
+    <div className="flex flex-col items-center w-48">
 
+      {/* TEXTO */}
+      <span className="text-xs text-gray-600 mb-1">
+        {progress.current} / {progress.total}
+      </span>
+
+      {/* BARRA */}
+      <div className="w-full h-2 bg-gray-200 rounded overflow-hidden">
+        <div
+          className="h-full bg-orange-500 transition-all duration-300"
+          style={{
+            width: `${(progress.current / progress.total) * 100}%`
+          }}
+        />
       </div>
+
+    </div>
+
+  )}
+
+</div>
 {overwriteModal && (
 
 <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">

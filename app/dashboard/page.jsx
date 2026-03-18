@@ -192,8 +192,8 @@ export default function DashboardPage() {
 )}
 
           {selectedTab === "administracion" && (
-            <RecibosScreen />
-            // <AdministracionTab userData={userData} />
+           //<RecibosScreen />
+             <AdministracionTab userData={userData} />
           )}
         </div>
         </div>

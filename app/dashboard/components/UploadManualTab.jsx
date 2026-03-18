@@ -85,6 +85,11 @@ export default function UploadManualTab({ user, month, onClose, onUploaded }) {
 
   };
 
+  const truncateFileName = (name, maxLength = 15) => {
+  if (name.length <= maxLength) return name;
+  return name.slice(0, maxLength) + "...";
+};
+
   /* ===============================
      RESULTADO
   =============================== */
@@ -130,7 +135,7 @@ export default function UploadManualTab({ user, month, onClose, onUploaded }) {
         onDragLeave={()=>setDragActive(false)}
         onDrop={handleDrop}
         className={`
-          border-2 border-dashed rounded-lg p-8 text-center cursor-pointer
+          border-2 border-dashed rounded-lg p-4 text-center cursor-pointer
           transition
           ${dragActive
             ? "border-orange-500 bg-orange-50"
@@ -165,10 +170,10 @@ export default function UploadManualTab({ user, month, onClose, onUploaded }) {
 
         {file && (
 
-          <div className="flex justify-between items-center text-sm">
+          <div className="flex  justify-between items-center text-sm">
 
             <span className="truncate">
-              {file.name}
+                {truncateFileName(file.name)}
             </span>
 
             <button

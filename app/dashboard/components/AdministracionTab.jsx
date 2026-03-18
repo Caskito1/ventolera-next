@@ -83,7 +83,7 @@ const years = [...new Set(months.map((m) => m.value.slice(0, 4)))]
     m.value.startsWith(selectedYear)
   );
 
-  const handleDownload = async (fileId, fileName) => {
+  const handleDownload = async (fileId, fileName, nombreUsuario) => {
 
   try {
 
@@ -99,7 +99,7 @@ const years = [...new Set(months.map((m) => m.value.slice(0, 4)))]
 
     const a = document.createElement("a");
     a.href = url;
-    a.download = `${fileName}.pdf`;
+    a.download = `Recibo-Sueldo-${nombreUsuario}-${fileName}.pdf`;
 
     document.body.appendChild(a);
     a.click();
@@ -145,7 +145,7 @@ const monthsByYear = myMonths.reduce((acc, month) => {
   .sort((a, b) => b[0] - a[0])
   .map(([year, months]) => (
 
-  <div key={year} className="space-y-2">
+  <div key={year} className="space-y-2" >
 
     {/* TITULO AÑO */}
 
@@ -169,9 +169,16 @@ const monthsByYear = myMonths.reduce((acc, month) => {
 
         <div
           key={month.value}
+          onClick={() => {
+            if (!isAvailable) return; 
+            handleDownload(recibo.driveFileId, recibo.periodo, userData.nombre);
+          }}
           className={`flex justify-between items-center border p-3 rounded
-          ${isAvailable ? "bg-white" : "bg-gray-100 opacity-60"}
-        `}
+           ${isAvailable 
+            ? "bg-white cursor-pointer hover:bg-gray-50 active:scale-95 transition-transform"
+            : "bg-gray-100 opacity-60 cursor-not-allowed"
+          }
+              `}
         >
 
           <span className="font-medium">
@@ -248,7 +255,7 @@ const monthsByYear = myMonths.reduce((acc, month) => {
       {/* HEADER */}
 
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-2xl font-bold">Administración</h2>
+        <h2 className="text-2xl font-bold">Recibos de sueldo</h2>
 
        {canWrite(userData, MODULES.RECIBOS) && (
           <button
@@ -277,7 +284,7 @@ const monthsByYear = myMonths.reduce((acc, month) => {
                 onClick={() =>
                   setOpenUser(isOpen ? null : user.uid)
                 }
-                className="w-full flex justify-between items-center p-3 hover:bg-gray-50 transition"
+                className="w-full flex justify-between items-center p-3 hover:bg-gray-50 transition cursor-pointer"
               >
                 <span className="font-medium">
                   {user.nombre}
@@ -285,10 +292,10 @@ const monthsByYear = myMonths.reduce((acc, month) => {
 
                 <span
                   className={`transition-transform duration-300 ${
-                    isOpen ? "rotate-90" : ""
+                    isOpen ? "rotate-270" : "rotate-180"
                   }`}
                 >
-                  ➜
+                  <img src="/media/icons/arrow-left-black.webp" alt="" />
                 </span>
               </button>
 
@@ -315,7 +322,7 @@ const monthsByYear = myMonths.reduce((acc, month) => {
       <button
         key={year}
         onClick={() => setSelectedYear(year)}
-        className={`px-3 py-1 rounded text-sm border transition
+        className={`px-3 py-1 rounded text-sm border transition cursor-pointer
         ${
           selectedYear === year
             ? "bg-orange-500 text-white border-orange-500"
@@ -335,7 +342,7 @@ const monthsByYear = myMonths.reduce((acc, month) => {
   {canWrite(userData, MODULES.RECIBOS) && (
     <button
      onClick={() => setManualUploadUser(user)}
-      className="bg-orange-500 text-white text-sm px-3 py-1 rounded hover:bg-orange-600 transition"
+      className="bg-orange-500 text-white text-sm px-3 py-1 rounded hover:bg-orange-600 transition cursor-pointer"
     >
       Cargar recibos
     </button>
@@ -356,12 +363,12 @@ const monthsByYear = myMonths.reduce((acc, month) => {
                             disabled={!isAvailable}
                             onClick={() =>
                                 recibo &&
-                                handleDownload(recibo.driveFileId, recibo.periodo)
+                                handleDownload(recibo.driveFileId, recibo.periodo, user.nombre)
                               }
-                            className={`flex  items-center justify-center gap-2 p-3 border rounded transition
+                            className={`flex  items-center justify-center gap-2 p-3 border rounded transition 
                             ${
                               isAvailable
-                                ? "bg-white border-orange-500 hover:scale-105"
+                                ? "bg-white border-gray-800 cursor-pointer   "
                                 : "bg-gray-100 border-gray-200 cursor-not-allowed opacity-70"
                             }`}
                           >
