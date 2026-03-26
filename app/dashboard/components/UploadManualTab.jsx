@@ -182,9 +182,7 @@ export default function UploadManualTab({ user, month, onClose, onUploaded }) {
             >
               eliminar
             </button>
-
           </div>
-
         )}
 
       </div>

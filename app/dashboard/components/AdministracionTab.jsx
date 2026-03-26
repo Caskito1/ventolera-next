@@ -5,6 +5,7 @@ import UploadReciboMasivoModal from "./UploadReciboMasivoModal";
 import UploadReciboManualModal from "./UploadReciboManualModal";
 import { canWrite } from "@/lib/permissions";
 import { MODULES } from "@/lib/modules";
+import { auth } from "@/firebase";
 
 
 export default function AdministracionTab({ userData }) {
@@ -15,11 +16,18 @@ export default function AdministracionTab({ userData }) {
   const [selectedYear, setSelectedYear] = useState("2026");
   const [downloadingId, setDownloadingId] = useState(null);
   
-  const load = async () => {
-    const res = await fetch("/api/recibos-dashboard");
-    const json = await res.json();
-    setData(json);
-  };
+const load = async () => {
+  const token = await auth.currentUser.getIdToken();
+
+  const res = await fetch("/api/recibos-dashboard", {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  const json = await res.json();
+  setData(json);
+};
   useEffect(() => {
     load();
   }, []);
@@ -88,9 +96,14 @@ const years = [...new Set(months.map((m) => m.value.slice(0, 4)))]
   try {
 
     setDownloadingId(fileId);
-
-    const response = await fetch(
-      `/api/downloadpdf?fileId=${fileId}&download=1`
+   const token = await auth.currentUser.getIdToken();
+     const response = await fetch(
+      `/api/downloadpdf?fileId=${fileId}&download=1`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
     );
 
     const blob = await response.blob();
@@ -167,59 +180,59 @@ const monthsByYear = myMonths.reduce((acc, month) => {
 
       return (
 
-        <div
-          key={month.value}
-          onClick={() => {
-            if (!isAvailable) return; 
-            handleDownload(recibo.driveFileId, recibo.periodo, userData.nombre);
-          }}
-          className={`flex justify-between items-center border p-3 rounded
-           ${isAvailable 
-            ? "bg-white cursor-pointer hover:bg-gray-50 active:scale-95 transition-transform"
-            : "bg-gray-100 opacity-60 cursor-not-allowed"
-          }
-              `}
-        >
+   <div
+  key={month.value}
+  onClick={() => {
+    if (!isAvailable) return;
+    handleDownload(
+      recibo.driveFileId,
+      recibo.periodo,
+      userData.nombre
+    );
+  }}
+  className={`flex justify-between items-center border p-3 rounded
+    ${
+      isAvailable
+        ? "bg-white cursor-pointer hover:bg-gray-50 active:scale-95 transition-transform"
+        : "bg-gray-100 opacity-60 cursor-not-allowed"
+    }
+  `}
+>
+  <span className="font-medium">
+    {formatMonth(month.value)}
+  </span>
 
-          <span className="font-medium">
-            {formatMonth(month.value)}
-          </span>
+  {isAvailable ? (
+    downloadingId === recibo.driveFileId ? (
+      <div className="w-4 h-4 border-2 border-gray-400 border-t-orange-600 rounded-full animate-spin" />
+    ) : (
+      <img
+        src="/media/icons/download.webp"
+        height={18}
+        width={18}
+        className="pointer-events-none"
+      onClick={(e) => {
+  if (!isAvailable) return;
+  e.stopPropagation(); // ✅ ahora sí existe
+  handleDownload(
+    recibo.driveFileId,
+    recibo.periodo,
+    userData.nombre
+  );
+}}
+      />
+    )
+  ) : (
+    <img
+      src="/media/icons/block.webp"
+      height={18}
+      width={18}
+      className="pointer-events-none"
+    />
+  )}
+</div>
 
-          {isAvailable ? (
-
-            <button
-              onClick={() =>
-                handleDownload(
-                  recibo.driveFileId,
-                  recibo.periodo
-                )
-              }
-              className="flex items-center gap-2 text-orange-500 hover:scale-105 transition"
-            >
-
-              {downloadingId === recibo.driveFileId ? (
-                <div className="w-4 h-4 border-2 border-gray-400 border-t-orange-600 rounded-full animate-spin" />
-              ) : (
-                <img
-                  src="/media/icons/download.webp"
-                  height={18}
-                  width={18}
-                />
-              )}
-
-            </button>
-
-          ) : (
-
-            <img
-              src="/media/icons/block.webp"
-              height={18}
-              width={18}
-            />
-
-          )}
-
-        </div>
+      
 
       );
 
