@@ -8,7 +8,7 @@ export default function UploadReciboMasivoModal({ onClose, onUploaded }) {
 
     <div className="fixed inset-0 z-30 bg-black/70 flex items-center justify-center">
 
-      <div className="bg-white rounded-lg shadow-xl w-[560px] p-6 relative">
+      <div className="bg-white rounded-lg shadow-xl w-[560px] p-4 relative mx-4">
 
         <button
           onClick={onClose}

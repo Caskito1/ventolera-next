@@ -51,7 +51,7 @@ useEffect(()=>{
 
     <div className="fixed inset-0 z-40 bg-black/70 flex items-center justify-center">
 
-      <div className="bg-white rounded-lg shadow-xl w-[420px] p-6 relative">
+      <div className="bg-white rounded-lg shadow-xl w-[420px] p-4 relative mx-4">
 
         <button
           onClick={onClose}
