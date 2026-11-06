@@ -3,6 +3,7 @@ export const runtime = "nodejs";
 import { google } from "googleapis";
 import { NextResponse } from "next/server";
 import { Readable } from "stream";
+import { slugify } from "@/lib/slug";
 
 /* ===============================
    📁 Carpetas por instrumento
@@ -16,18 +17,6 @@ const INSTRUMENT_FOLDERS = {
   "trompeta-02": "1yq4esUpgeesqc2VQgLkrcCTUKjKD96SF",
   "tuba": "1TNm8cuKErsg4aRKRdyc1WV9qPOYLys9l",
 };
-
-/* ===============================
-   🔤 Slugify
-================================ */
-function slugify(text) {
-  return text
-    .toLowerCase()
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/(^-|-$)/g, "");
-}
 
 /* ===============================
    🚀 POST
@@ -128,6 +117,17 @@ export async function POST(req) {
     await db.collection("partituras").doc(slug).set(partituraData, {
       merge: true,
     });
+
+    // Un tema por canción: el alta de partituras crea o actualiza `temas/{slug}`
+    // sin tocar el audio existente (merge preserva `audio`).
+    await db.collection("temas").doc(slugify(tema)).set(
+      {
+        tema,
+        disco,
+        updatedAt: now,
+      },
+      { merge: true }
+    );
 
     return NextResponse.json({
       success: true,

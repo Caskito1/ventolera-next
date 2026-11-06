@@ -18,6 +18,13 @@ service cloud.firestore {
       allow read: if request.auth != null;
     }
 
+    // Colección de temas (canción + metadatos de audio).
+    // La escribe solo el Admin SDK (alta de partituras, alta de audio, seed).
+    match /temas/{slug} {
+      allow read: if request.auth != null;
+      allow write: if false;
+    }
+
     // Colección de listas
     match /listas/{listaId} {
       allow write: if request.auth != null && request.auth.token.role == "admin";
