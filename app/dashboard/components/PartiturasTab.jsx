@@ -1,13 +1,17 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { doc, setDoc, deleteDoc } from "firebase/firestore";
 import { auth, db } from "@/firebase";
 import { usePartituras } from "@/app/hooks/usePartituras";
+import { useTemas } from "@/app/hooks/useTemas";
+import { buildTemaRows } from "@/lib/temaRows";
 import UploadPartituraModal from "./UploadPartiturasModal";
+import TemaRow from "./TemaRow";
 import { canWrite } from "@/lib/permissions";
 import { MODULES } from "@/lib/modules";
 
 export default function PartiturasTab({ userData, favorites, setFavorites }) {
   const { partituras, loading, refetch } = usePartituras(userData?.subrol);
+  const { temas, loading: temasLoading, refetch: refetchTemas } = useTemas();
 
   const [searchTerm, setSearchTerm] = useState("");
   const [showFavorites, setShowFavorites] = useState(false);
@@ -15,6 +19,12 @@ export default function PartiturasTab({ userData, favorites, setFavorites }) {
   const [downloadingId, setDownloadingId] = useState(null);
   const [animatingId, setAnimatingId] = useState(null);
   const [showUploadModal, setShowUploadModal] = useState(false);
+
+  // Reproductor único del tab: una sola fila suena a la vez.
+  const [audioSlug, setAudioSlug] = useState(null);
+  const [audioUrl, setAudioUrl] = useState(null);
+  const [audioStatus, setAudioStatus] = useState("idle"); // idle | loading | playing | paused | error
+  const audioRef = useRef(null);
 
   const handleDownload = async (fileId, fileName) => {
     try {
@@ -73,13 +83,85 @@ export default function PartiturasTab({ userData, favorites, setFavorites }) {
     }
   };
 
-  const filteredPDFs = partituras
-    .filter((p) => p.tema.toLowerCase().includes(searchTerm.toLowerCase()))
-    .filter((p) => (showFavorites ? favorites.includes(p.id) : true))
-    .filter((p) =>
-      selectedInstrument === "todos"
-        ? true
-        : p.instrumento === selectedInstrument,
+  const handleToggleAudio = async (row) => {
+    if (!row?.audio?.storagePath) return;
+
+    // Misma fila: play/pausa sin volver a firmar la URL.
+    if (audioSlug === row.slug) {
+      const el = audioRef.current;
+      if (!el) return;
+
+      if (audioStatus === "playing") {
+        el.pause();
+        setAudioStatus("paused");
+      } else {
+        try {
+          await el.play();
+          setAudioStatus("playing");
+        } catch (error) {
+          console.error("No se pudo reproducir:", error?.message);
+          setAudioStatus("error");
+        }
+      }
+      return;
+    }
+
+    try {
+      setAudioSlug(row.slug);
+      setAudioUrl(null);
+      setAudioStatus("loading");
+
+      const token = await auth.currentUser?.getIdToken();
+      if (!token) {
+        setAudioStatus("error");
+        return;
+      }
+
+      const res = await fetch(
+        `/api/audio/url?slug=${encodeURIComponent(row.slug)}`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      if (!res.ok) {
+        setAudioStatus("error");
+        return;
+      }
+
+      const data = await res.json();
+      setAudioUrl(data.url);
+      setAudioStatus("playing");
+    } catch (error) {
+      console.error("Error obteniendo el audio:", error?.message);
+      setAudioStatus("error");
+    }
+  };
+
+  useEffect(() => {
+    const el = audioRef.current;
+    if (!el || !audioUrl || audioStatus !== "playing") return;
+
+    el.play().catch((error) => {
+      console.error("No se pudo reproducir:", error?.message);
+      setAudioStatus("error");
+    });
+  }, [audioUrl, audioStatus]);
+
+  const partiturasPorInstrumento = partituras.filter((p) =>
+    selectedInstrument === "todos" ? true : p.instrumento === selectedInstrument,
+  );
+
+  const rows = buildTemaRows(temas, partiturasPorInstrumento)
+    .map((row) => ({
+      ...row,
+      partituras: showFavorites
+        ? row.partituras.filter((p) => favorites.includes(p.id))
+        : row.partituras,
+    }))
+    .filter((row) => (showFavorites ? row.partituras.length > 0 : true))
+    .filter((row) =>
+      String(row.tema)
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase()),
     );
 
   return (
@@ -90,6 +172,7 @@ export default function PartiturasTab({ userData, favorites, setFavorites }) {
           instrumentos={userData.subrol}
           onUploadSuccess={async () => {
             await refetch();
+            await refetchTemas();
             setShowUploadModal(false);
           }}
         />
@@ -150,94 +233,42 @@ export default function PartiturasTab({ userData, favorites, setFavorites }) {
         </button>
       </div>
 
-      {loading ? (
+      {loading || temasLoading ? (
         <p>Cargando partituras...</p>
-      ) : filteredPDFs.length === 0 ? (
+      ) : rows.length === 0 ? (
         <p>No hay partituras disponibles.</p>
       ) : (
-     <ul className="space-y-2">
-  {filteredPDFs.map((p) => {
-    const isAvailable = !!p.driveFileId;
-
-    return (
-      <li
-        key={p.id}
-        onClick={() => {
-          if (isAvailable) {
-            handleDownload(p.driveFileId, p.tema);
-          }
-        }}
-        className={`flex justify-between items-center border p-3 rounded transition hover:bg-gray-50 cursor-pointer
-          ${isAvailable ? "bg-white" : "bg-gray-100 opacity-60 cursor-not-allowed"}
-        `}
-      >
-        <div className="flex gap-3 items-center ">
-          {/* ⭐ FAVORITO */}
-          <button
-            onClick={(e) => {
-              e.stopPropagation(); // 👈 CLAVE
-              toggleFavorite(p.id, p.tema);
-            }}
-            disabled={!isAvailable}
-            className={`${!isAvailable && "cursor-not-allowed opacity-50"}`}
-          >
-            <img
-              src={
-                favorites.includes(p.id)
-                  ? "/media/icons/star-yellow.webp"
-                  : "/media/icons/star.webp"
-              }
-              alt="Favorito"
-              height={16}
-              width={16}
-              className={`
-                transition-transform duration-200
-                ${animatingId === p.id ? "scale-125" : "scale-100"}
-              `}
+        <ul className="space-y-2">
+          {rows.map((row) => (
+            <TemaRow
+              key={row.slug}
+              row={row}
+              favorites={favorites}
+              isPlaying={audioSlug === row.slug && audioStatus === "playing"}
+              isLoading={audioSlug === row.slug && audioStatus === "loading"}
+              onToggleAudio={handleToggleAudio}
+              onToggleFavorite={toggleFavorite}
+              onDownload={handleDownload}
+              downloadingId={downloadingId}
+              animatingId={animatingId}
             />
-          </button>
-
-          <span className={`${!isAvailable && "text-gray-500"}`}>
-            {p.tema} ({p.instrumento})
-          </span>
-        </div>
-
-        <div className="flex gap-3 items-center ">
-          {/* ⬇ DESCARGA */}
-          {isAvailable ? (
-            <button
-              onClick={(e) => {
-                e.stopPropagation(); // 👈 también acá por las dudas
-                handleDownload(p.driveFileId, p.tema);
-              }}
-              disabled={downloadingId === p.driveFileId}
-              className="flex items-center justify-center w-6 h-6"
-            >
-              {downloadingId === p.driveFileId ? (
-                <div className="w-4 h-4 border-2 border-gray-400 border-t-orange-600 rounded-full animate-spin" />
-              ) : (
-                <img
-                  src="/media/icons/download.webp"
-                  height={20}
-                  width={20}
-                />
-              )}
-            </button>
-          ) : (
-            <div className="flex items-center gap-1 text-gray-400 cursor-not-allowed">
-              <img
-                src="/media/icons/block.webp"
-                height={16}
-                width={16}
-              />
-            </div>
-          )}
-        </div>
-      </li>
-    );
-  })}
-</ul>
+          ))}
+        </ul>
       )}
+
+      <audio
+        ref={audioRef}
+        src={audioUrl ?? undefined}
+        preload="metadata"
+        className="hidden"
+        onEnded={() => {
+          if (audioRef.current) audioRef.current.currentTime = 0;
+          setAudioStatus("paused");
+        }}
+        onError={() => {
+          if (audioUrl) setAudioStatus("error");
+        }}
+      />
     </>
   );
 }
