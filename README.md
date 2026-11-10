@@ -1,36 +1,57 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Ventolera — Sitio y panel de gestión
 
-## Getting Started
+Sitio web de la banda **La Ventolera** y panel privado para administrar temas, partituras, audios y recibos.
 
-First, run the development server:
+> Proyecto de portfolio. No incluye datos reales ni credenciales.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## Funcionalidades
+
+- Landing pública: portada, historia, álbumes, galería, plataformas y lanzamientos.
+- Panel privado: temas, partituras en PDF, audios, recibos y administración.
+- Carga de archivos a Firebase Storage y Google Drive.
+- Autenticación y permisos por rol.
+- Reproductor de audio y navegación por tema.
+
+## Stack
+
+- Next.js 16 (App Router) + React 19
+- Firebase (Auth, Firestore, Storage) + Firebase Admin
+- Google Drive API (OAuth)
+- Tailwind CSS 4, Framer Motion, Swiper
+- pdf-parse / pdfjs-dist para procesar partituras
+- API Routes para audio, PDFs, Drive y recibos
+
+## Estructura
+
+```
+app/
+├── page.jsx        landing pública
+├── dashboard/      panel de gestión
+├── escuela/        sección de escuela
+├── ventoapp/       acceso a la app
+└── api/            audio, Drive, PDFs, recibos, usuarios
+lib/                auth, permisos, storage, slugs
+pdfs/               partituras
+scripts/            carga de partituras y storage
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Puesta en marcha
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+```bash
+npm install
+npm run dev
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Variables de entorno
 
-## Learn More
+Crear `.env.local` (no se versiona) con las claves de Firebase y Google Drive. `serviceAccountKey.json` también es local y no se versiona.
 
-To learn more about Next.js, take a look at the following resources:
+## Seguridad
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- `.env.local` y `serviceAccountKey.json` no se versionan.
+- La API key web de Firebase es pública por diseño; se restringe por dominio.
+- El panel requiere autenticación y permisos.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Capturas
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+_(pendiente: agregar en `docs/screenshots/`)_
