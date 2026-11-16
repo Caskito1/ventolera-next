@@ -1,3 +1,9 @@
+/**
+ * FUERA DE USO (16/11/2026).
+ * Las partituras se sirven desde Google Drive vía `/api/downloadpdf`; este script
+ * cargaba PDFs a Firebase Storage, algo que la app nunca consumió. Se conserva
+ * solo como referencia y no forma parte de ningún flujo. Ver `context/deuda-tecnica.md`.
+ */
 import admin from "firebase-admin";
 import { readdirSync, readFileSync } from "fs";
 import { join } from "path";
@@ -7,7 +13,7 @@ const serviceAccount = JSON.parse(readFileSync("./serviceAccountKey.json", "utf-
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
-  storageBucket: "ventolera-cc6ba.appspot.com" // nombre exacto
+  storageBucket: "ventolera-cc6ba.firebasestorage.app"
 });
 
 const bucket = admin.storage().bucket();
