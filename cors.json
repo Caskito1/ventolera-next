@@ -1,0 +1,18 @@
+[
+  {
+    "origin": [
+      "http://localhost:3000",
+      "https://ventolera.uy",
+      "https://www.ventolera.uy",
+      "https://*.vercel.app"
+    ],
+    "method": ["GET", "PUT", "HEAD"],
+    "responseHeader": [
+      "Content-Type",
+      "Content-Range",
+      "Content-Length",
+      "x-goog-content-length-range"
+    ],
+    "maxAgeSeconds": 3600
+  }
+]

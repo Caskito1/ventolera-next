@@ -2,8 +2,10 @@ rules_version = '2';
 service firebase.storage {
   match /b/{bucket}/o {
     match /{allPaths=**} {
-      // Permite lectura y escritura a cualquiera (solo para desarrollo)
-      allow read, write: if true;
+      // Deny total: ningún acceso directo al bucket.
+      // El audio se sube y se reproduce solo por URLs firmadas de corta duración,
+      // emitidas por endpoints autenticados (/api/audio/*). Cierra DT-07.
+      allow read, write: if false;
     }
   }
 }
