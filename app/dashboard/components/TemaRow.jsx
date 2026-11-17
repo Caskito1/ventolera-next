@@ -15,13 +15,17 @@ function FavoriteButton({ partitura, favorites, animatingId, onToggleFavorite })
       }}
       disabled={disabled}
       title={isFav ? "Quitar de favoritas" : "Marcar como favorita"}
-      className={disabled ? "cursor-not-allowed opacity-50" : "cursor-pointer"}
+      className={`flex items-center justify-center w-7 h-7 rounded-full transition ${
+        disabled
+          ? "cursor-not-allowed opacity-50"
+          : "cursor-pointer hover:bg-gray-100"
+      }`}
     >
       <img
         src={isFav ? "/media/icons/star-yellow.webp" : "/media/icons/star.webp"}
         alt="Favorito"
-        height={16}
-        width={16}
+        height={20}
+        width={20}
         className={`transition-transform duration-200 ${
           animatingId === partitura?.id ? "scale-125" : "scale-100"
         }`}
@@ -160,6 +164,14 @@ export default function TemaRow({
         </div>
 
         <div className="flex gap-2 items-center shrink-0">
+          {hasAudio && (
+            <PlayButton
+              isPlaying={isPlaying}
+              isLoading={isLoading}
+              onClick={() => onToggleAudio(row)}
+            />
+          )}
+
           {single &&
             (single.driveFileId ? (
               <DownloadButton
@@ -177,20 +189,12 @@ export default function TemaRow({
             </span>
           )}
 
-          {hasAudio && (
-            <PlayButton
-              isPlaying={isPlaying}
-              isLoading={isLoading}
-              onClick={() => onToggleAudio(row)}
-            />
-          )}
-
           {multiple && (
             <button
               type="button"
               aria-expanded={open}
               aria-label={open ? "Ocultar partes" : "Mostrar partes"}
-              className="w-6 h-6 flex items-center justify-center cursor-pointer text-gray-500"
+              className="w-7 h-7 flex items-center justify-center cursor-pointer text-gray-500"
               onClick={(e) => {
                 e.stopPropagation();
                 setOpen((prev) => !prev);
@@ -201,7 +205,7 @@ export default function TemaRow({
                   open ? "rotate-270" : "rotate-180"
                 }`}
               >
-                <img src="/media/icons/arrow-left-black.webp" alt="" width={16} />
+                <img src="/media/icons/arrow-left-black.webp" alt="" width={20} />
               </span>
             </button>
           )}
@@ -217,11 +221,13 @@ export default function TemaRow({
           }`}
         >
           <div className="overflow-hidden min-h-0">
-            <ul className="border-t px-3 py-2 space-y-1">
-              {partituras.map((partitura) => (
+            <ul className="border-t px-3 py-2 space-y-2">
+              {partituras.map((partitura, index) => (
                 <li
                   key={partitura.id}
-                  className="flex justify-between items-center gap-2"
+                  className={`flex justify-between items-center gap-2 rounded-lg px-2 py-1.5 ${
+                    index % 2 === 0 ? "bg-white" : "bg-gray-100"
+                  }`}
                 >
                   <div className="flex gap-2 items-center min-w-0">
                     <FavoriteButton
