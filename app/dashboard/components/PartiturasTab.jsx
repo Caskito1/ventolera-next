@@ -26,6 +26,9 @@ export default function PartiturasTab({ userData, favorites, setFavorites }) {
   const [audioSlug, setAudioSlug] = useState(null);
   const [audioUrl, setAudioUrl] = useState(null);
   const [audioStatus, setAudioStatus] = useState("idle"); // idle | loading | playing | paused | error
+  const [audioDuration, setAudioDuration] = useState(0);
+  const [audioCurrentTime, setAudioCurrentTime] = useState(0);
+  const [downloadingAudioSlug, setDownloadingAudioSlug] = useState(null);
   const audioRef = useRef(null);
 
   const handleDownload = async (fileId, fileName) => {
@@ -112,6 +115,8 @@ export default function PartiturasTab({ userData, favorites, setFavorites }) {
       setAudioSlug(row.slug);
       setAudioUrl(null);
       setAudioStatus("loading");
+      setAudioDuration(0);
+      setAudioCurrentTime(0);
 
       const token = await auth.currentUser?.getIdToken();
       if (!token) {
@@ -147,6 +152,54 @@ export default function PartiturasTab({ userData, favorites, setFavorites }) {
       setAudioStatus("error");
     });
   }, [audioUrl, audioStatus]);
+
+  const handleSeek = (time) => {
+    const el = audioRef.current;
+    if (!el || !Number.isFinite(time)) return;
+
+    el.currentTime = time;
+    setAudioCurrentTime(time);
+  };
+
+  const handleDownloadAudio = async (row) => {
+    if (!row?.slug) return;
+
+    try {
+      setDownloadingAudioSlug(row.slug);
+
+      const token = await auth.currentUser?.getIdToken();
+      if (!token) return;
+
+      const res = await fetch(
+        `/api/audio/url?slug=${encodeURIComponent(row.slug)}&download=1`,
+        { headers: { Authorization: `Bearer ${token}` } },
+      );
+
+      if (!res.ok) {
+        const data = await res.json().catch(() => null);
+        console.error(
+          "No se pudo descargar el audio:",
+          data?.error ?? res.status,
+        );
+        return;
+      }
+
+      const data = await res.json();
+      if (!data?.url) return;
+
+      // La URL firmada trae `response-content-disposition: attachment`.
+      const a = document.createElement("a");
+      a.href = data.url;
+      a.rel = "noopener";
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+    } catch (error) {
+      console.error("Error descargando el audio:", error?.message);
+    } finally {
+      setDownloadingAudioSlug(null);
+    }
+  };
 
   const partiturasPorInstrumento = partituras.filter((p) =>
     selectedInstrument === "todos" ? true : p.instrumento === selectedInstrument,
@@ -268,9 +321,15 @@ export default function PartiturasTab({ userData, favorites, setFavorites }) {
               favorites={favorites}
               isPlaying={audioSlug === row.slug && audioStatus === "playing"}
               isLoading={audioSlug === row.slug && audioStatus === "loading"}
+              isActive={audioSlug === row.slug}
+              currentTime={audioSlug === row.slug ? audioCurrentTime : 0}
+              duration={audioSlug === row.slug ? audioDuration : 0}
+              onSeek={handleSeek}
               onToggleAudio={handleToggleAudio}
               onToggleFavorite={toggleFavorite}
               onDownload={handleDownload}
+              onDownloadAudio={handleDownloadAudio}
+              downloadingAudio={downloadingAudioSlug === row.slug}
               downloadingId={downloadingId}
               animatingId={animatingId}
             />
@@ -283,8 +342,18 @@ export default function PartiturasTab({ userData, favorites, setFavorites }) {
         src={audioUrl ?? undefined}
         preload="metadata"
         className="hidden"
+        onLoadedMetadata={(event) => {
+          const value = event.currentTarget.duration;
+          setAudioDuration(Number.isFinite(value) && value > 0 ? value : 0);
+        }}
+        onDurationChange={(event) => {
+          const value = event.currentTarget.duration;
+          setAudioDuration(Number.isFinite(value) && value > 0 ? value : 0);
+        }}
+        onTimeUpdate={(event) => setAudioCurrentTime(event.currentTarget.currentTime)}
         onEnded={() => {
           if (audioRef.current) audioRef.current.currentTime = 0;
+          setAudioCurrentTime(0);
           setAudioStatus("paused");
         }}
         onError={() => {

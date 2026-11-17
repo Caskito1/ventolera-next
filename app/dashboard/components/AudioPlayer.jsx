@@ -26,7 +26,7 @@ export default function AudioPlayer({
       aria-label={label}
       className={`flex items-center justify-center w-8 h-8 rounded-full transition shrink-0 ${
         disabled
-          ? "opacity-30 cursor-not-allowed"
+          ? "bg-gray-100 cursor-not-allowed"
           : "cursor-pointer hover:bg-orange-100"
       }`}
     >
@@ -38,6 +38,7 @@ export default function AudioPlayer({
           alt=""
           width={16}
           height={16}
+          className={disabled ? "brightness-0 opacity-40" : ""}
         />
       )}
     </button>

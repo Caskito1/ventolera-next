@@ -68,6 +68,34 @@ function BlockIcon() {
   );
 }
 
+function formatTime(value) {
+  if (!Number.isFinite(value) || value < 0) return "--:--";
+
+  const total = Math.floor(value);
+  const minutes = Math.floor(total / 60);
+  const seconds = total % 60;
+  return `${minutes}:${String(seconds).padStart(2, "0")}`;
+}
+
+function AudioDownloadButton({ downloading, onDownload }) {
+  return (
+    <button
+      type="button"
+      onClick={onDownload}
+      disabled={downloading}
+      title="Descargar audio"
+      aria-label="Descargar audio"
+      className="flex items-center justify-center w-6 h-6 cursor-pointer disabled:cursor-not-allowed"
+    >
+      {downloading ? (
+        <span className="w-4 h-4 border-2 border-gray-400 border-t-orange-600 rounded-full animate-spin" />
+      ) : (
+        <img src="/media/icons/download.webp" alt="" height={18} width={18} />
+      )}
+    </button>
+  );
+}
+
 /**
  * Una fila por canción: reproductor, acordeón de PDFs por instrumento,
  * favoritos y descarga.
@@ -77,9 +105,15 @@ export default function TemaRow({
   favorites,
   isPlaying,
   isLoading,
+  isActive,
+  currentTime,
+  duration,
+  onSeek,
   onToggleAudio,
   onToggleFavorite,
   onDownload,
+  onDownloadAudio,
+  downloadingAudio,
   downloadingId,
   animatingId,
 }) {
@@ -113,6 +147,15 @@ export default function TemaRow({
               onClick={() => onToggleAudio(row)}
             />
           </span>
+
+          {hasAudio && (
+            <span onClick={(e) => e.stopPropagation()}>
+              <AudioDownloadButton
+                downloading={downloadingAudio}
+                onDownload={() => onDownloadAudio(row)}
+              />
+            </span>
+          )}
 
           {single && (
             <FavoriteButton
@@ -166,6 +209,33 @@ export default function TemaRow({
           )}
         </div>
       </div>
+
+      {isActive && hasAudio && (
+        <div
+          className="border-t px-3 py-2"
+          onClick={(event) => event.stopPropagation()}
+        >
+          <div className="flex items-center gap-2">
+            <span className="text-[11px] tabular-nums text-gray-500 w-9 text-right">
+              {formatTime(currentTime)}
+            </span>
+            <input
+              type="range"
+              min={0}
+              max={duration || 0}
+              step={0.1}
+              value={Math.min(currentTime, duration || 0)}
+              onChange={(event) => onSeek(Number(event.target.value))}
+              disabled={!duration}
+              aria-label="Progreso del audio"
+              className="flex-1 h-1 cursor-pointer accent-orange-500 disabled:cursor-not-allowed"
+            />
+            <span className="text-[11px] tabular-nums text-gray-500 w-9">
+              {formatTime(duration)}
+            </span>
+          </div>
+        </div>
+      )}
 
       {multiple && open && (
         <ul className="border-t px-3 py-2 space-y-1">

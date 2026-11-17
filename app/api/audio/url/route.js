@@ -3,12 +3,18 @@ export const runtime = "nodejs";
 import { NextResponse } from "next/server";
 import { requirePermission, requireUser } from "@/lib/serverAuth";
 import { isSlug } from "@/lib/slug";
-import { READ_URL_TTL_MS, STORAGE_BUCKET } from "@/lib/storage";
+import {
+  AUDIO_MIME_EXTENSIONS,
+  READ_URL_TTL_MS,
+  STORAGE_BUCKET,
+} from "@/lib/storage";
 
 /**
- * GET /api/audio/url?slug=<slug>
+ * GET /api/audio/url?slug=<slug>[&download=1]
  * Autenticado + canRead(partituras). Devuelve una URL firmada de lectura
  * (60 min) para el audio del tema. Sin sesión no hay audio.
+ * Con `download=1` la firma incluye `response-content-disposition: attachment`
+ * para que el archivo se descargue en lugar de abrirse.
  */
 export async function GET(req) {
   const auth = await requireUser(req);
@@ -24,6 +30,7 @@ export async function GET(req) {
 
   const { searchParams } = new URL(req.url);
   const slug = searchParams.get("slug");
+  const download = searchParams.get("download") === "1";
 
   if (!isSlug(slug)) {
     return NextResponse.json({ error: "Tema inválido" }, { status: 400 });
@@ -46,6 +53,7 @@ export async function GET(req) {
     }
 
     const expiresAt = Date.now() + READ_URL_TTL_MS;
+    const extension = AUDIO_MIME_EXTENSIONS[audio.mimeType] ?? null;
 
     const [url] = await auth.admin
       .storage()
@@ -55,6 +63,11 @@ export async function GET(req) {
         version: "v4",
         action: "read",
         expires: expiresAt,
+        ...(download && extension
+          ? {
+              responseDisposition: `attachment; filename="${slug}.${extension}"`,
+            }
+          : {}),
       });
 
     return NextResponse.json({
