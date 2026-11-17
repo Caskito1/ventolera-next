@@ -37,14 +37,26 @@ scripts/            carga de partituras y storage
 
 ## Puesta en marcha
 
+Requisitos: Node.js 20 o superior (requisito de Next.js 16) y npm.
+
 ```bash
 npm install
+cp .env.example .env.local     # Windows PowerShell: Copy-Item .env.example .env.local
 npm run dev
 ```
 
+Abrir `http://localhost:3000`.
+
 ### Variables de entorno
 
-Crear `.env.local` (no se versiona) con las claves de Firebase y Google Drive. `serviceAccountKey.json` también es local y no se versiona.
+`.env.local` no se versiona; [`.env.example`](.env.example) lista solo los nombres. Se necesitan dos grupos:
+
+- **Google Drive / OAuth:** `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `GOOGLE_REDIRECT_URI` y `GOOGLE_REFRESH_TOKEN`. El refresh token se obtiene con el flujo OAuth: `node scripts/generateAuthUrl.js` y el callback de `/api/oauth2callback`.
+- **Firebase Admin SDK:** `FIREBASE_PROJECT_ID`, `FIREBASE_CLIENT_EMAIL` y `FIREBASE_PRIVATE_KEY` (con los saltos de línea escapados como `\n`).
+
+### Credenciales de los scripts
+
+`serviceAccountKey.json`, en la raíz de la app, no se versiona. Lo usan **solo los scripts**: `npm run upload:partituras`, `npm run upload:tostorage` y los de `scripts/` que inicializan el Admin SDK.
 
 ## Seguridad
 
