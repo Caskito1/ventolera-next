@@ -5,6 +5,7 @@ import { usePartituras } from "@/app/hooks/usePartituras";
 import { useTemas } from "@/app/hooks/useTemas";
 import { buildTemaRows } from "@/lib/temaRows";
 import UploadPartituraModal from "./UploadPartiturasModal";
+import UploadAudioModal from "./UploadAudioModal";
 import TemaRow from "./TemaRow";
 import { canWrite } from "@/lib/permissions";
 import { MODULES } from "@/lib/modules";
@@ -19,6 +20,7 @@ export default function PartiturasTab({ userData, favorites, setFavorites }) {
   const [downloadingId, setDownloadingId] = useState(null);
   const [animatingId, setAnimatingId] = useState(null);
   const [showUploadModal, setShowUploadModal] = useState(false);
+  const [showAudioModal, setShowAudioModal] = useState(false);
 
   // Reproductor único del tab: una sola fila suena a la vez.
   const [audioSlug, setAudioSlug] = useState(null);
@@ -177,15 +179,35 @@ export default function PartiturasTab({ userData, favorites, setFavorites }) {
           }}
         />
       )}
+      {showAudioModal && (
+        <UploadAudioModal
+          temas={temas}
+          onClose={() => setShowAudioModal(false)}
+          onUploadSuccess={async () => {
+            await refetchTemas();
+            setShowAudioModal(false);
+          }}
+        />
+      )}
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-2xl font-bold mb-4">Partituras</h2>
         {canWrite(userData, MODULES.PARTITURAS) && (
-          <button
-            onClick={() => setShowUploadModal(true)}
-            className="cursor-pointer w-10 h-10 rounded-full bg-orange-500 text-white text-2xl flex items-center justify-center shadow-lg hover:bg-orange-600 transition"
-          >
-            +
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => setShowAudioModal(true)}
+              title="Cargar audio del tema"
+              aria-label="Cargar audio del tema"
+              className="cursor-pointer w-10 h-10 rounded-full bg-orange-500 text-white text-xl flex items-center justify-center shadow-lg hover:bg-orange-600 transition"
+            >
+              ♪
+            </button>
+            <button
+              onClick={() => setShowUploadModal(true)}
+              className="cursor-pointer w-10 h-10 rounded-full bg-orange-500 text-white text-2xl flex items-center justify-center shadow-lg hover:bg-orange-600 transition"
+            >
+              +
+            </button>
+          </div>
         )}
       </div>
       {userData.subrol.length > 1 && (
