@@ -6,6 +6,7 @@ import { useTemas } from "@/app/hooks/useTemas";
 import { buildTemaRows } from "@/lib/temaRows";
 import UploadPartituraModal from "./UploadPartiturasModal";
 import UploadAudioModal from "./UploadAudioModal";
+import MiniPlayer from "./MiniPlayer";
 import TemaRow from "./TemaRow";
 import { canWrite } from "@/lib/permissions";
 import { MODULES } from "@/lib/modules";
@@ -92,7 +93,7 @@ export default function PartiturasTab({ userData, favorites, setFavorites }) {
     if (!row?.audio?.storagePath) return;
 
     // Misma fila: play/pausa sin volver a firmar la URL.
-    if (audioSlug === row.slug) {
+    if (audioSlug === row.slug && audioUrl) {
       const el = audioRef.current;
       if (!el) return;
 
@@ -161,6 +162,20 @@ export default function PartiturasTab({ userData, favorites, setFavorites }) {
     setAudioCurrentTime(time);
   };
 
+  const handleCloseAudio = () => {
+    const el = audioRef.current;
+    if (el) {
+      el.pause();
+      el.currentTime = 0;
+    }
+
+    setAudioStatus("idle");
+    setAudioSlug(null);
+    setAudioUrl(null);
+    setAudioDuration(0);
+    setAudioCurrentTime(0);
+  };
+
   const handleDownloadAudio = async (row) => {
     if (!row?.slug) return;
 
@@ -218,6 +233,10 @@ export default function PartiturasTab({ userData, favorites, setFavorites }) {
         .toLowerCase()
         .includes(searchTerm.toLowerCase()),
     );
+
+  const activeTema = audioSlug
+    ? temas.find((tema) => tema.slug === audioSlug) ?? null
+    : null;
 
   return (
     <>
@@ -313,7 +332,7 @@ export default function PartiturasTab({ userData, favorites, setFavorites }) {
       ) : rows.length === 0 ? (
         <p>No hay partituras disponibles.</p>
       ) : (
-        <ul className="space-y-2">
+        <ul className={audioSlug ? "space-y-2 pb-32 lg:pb-24" : "space-y-2"}>
           {rows.map((row) => (
             <TemaRow
               key={row.slug}
@@ -322,19 +341,31 @@ export default function PartiturasTab({ userData, favorites, setFavorites }) {
               isPlaying={audioSlug === row.slug && audioStatus === "playing"}
               isLoading={audioSlug === row.slug && audioStatus === "loading"}
               isActive={audioSlug === row.slug}
-              currentTime={audioSlug === row.slug ? audioCurrentTime : 0}
-              duration={audioSlug === row.slug ? audioDuration : 0}
-              onSeek={handleSeek}
               onToggleAudio={handleToggleAudio}
               onToggleFavorite={toggleFavorite}
               onDownload={handleDownload}
-              onDownloadAudio={handleDownloadAudio}
-              downloadingAudio={downloadingAudioSlug === row.slug}
               downloadingId={downloadingId}
               animatingId={animatingId}
             />
           ))}
         </ul>
+      )}
+
+      {activeTema && (
+        <MiniPlayer
+          title={activeTema.tema ?? activeTema.slug}
+          subtitle={activeTema.disco ?? null}
+          isPlaying={audioStatus === "playing"}
+          isLoading={audioStatus === "loading"}
+          hasError={audioStatus === "error"}
+          currentTime={audioCurrentTime}
+          duration={audioDuration}
+          downloading={downloadingAudioSlug === activeTema.slug}
+          onToggle={() => handleToggleAudio(activeTema)}
+          onSeek={handleSeek}
+          onDownload={() => handleDownloadAudio(activeTema)}
+          onClose={handleCloseAudio}
+        />
       )}
 
       <audio
