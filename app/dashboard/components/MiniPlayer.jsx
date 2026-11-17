@@ -104,7 +104,7 @@ export default function MiniPlayer({
 
   return (
     <div
-      className="fixed z-40 bottom-0 left-0 right-0 border-t border-orange-600/40 bg-orange-500/80 text-white shadow-2xl backdrop-blur-md lg:bottom-4 lg:left-80 lg:right-6 lg:rounded-xl lg:border"
+      className="fixed z-40 bottom-0 left-0 right-0 border-t border-orange-600/40 bg-orange-500/80 text-white shadow-2xl backdrop-blur-md lg:bottom-4 lg:left-[21rem] lg:right-10 lg:rounded-xl lg:border"
       style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
     >
       <div className="flex flex-col gap-2 px-3 py-2 lg:flex-row lg:items-center lg:gap-4 lg:px-4 lg:py-2.5">

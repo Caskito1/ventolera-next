@@ -24,8 +24,8 @@ function FavoriteButton({ partitura, favorites, animatingId, onToggleFavorite })
       <img
         src={isFav ? "/media/icons/star-yellow.webp" : "/media/icons/star.webp"}
         alt="Favorito"
-        height={20}
-        width={20}
+        height={18}
+        width={18}
         className={`transition-transform duration-200 ${
           animatingId === partitura?.id ? "scale-125" : "scale-100"
         }`}
