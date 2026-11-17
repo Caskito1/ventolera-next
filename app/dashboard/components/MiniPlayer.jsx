@@ -46,6 +46,8 @@ export default function MiniPlayer({
   onClose,
 }) {
   const playLabel = isPlaying ? "Pausar" : "Reproducir";
+  const progress =
+    duration > 0 ? Math.min(100, (currentTime / duration) * 100) : 0;
 
   const playButton = (
     <button
@@ -102,7 +104,7 @@ export default function MiniPlayer({
 
   return (
     <div
-      className="fixed z-40 bottom-0 left-0 right-0 border-t border-orange-800/50 bg-orange-700 text-white shadow-2xl lg:bottom-4 lg:left-80 lg:right-6 lg:rounded-xl lg:border"
+      className="fixed z-40 bottom-0 left-0 right-0 border-t border-orange-600/40 bg-orange-500/80 text-white shadow-2xl backdrop-blur-md lg:bottom-4 lg:left-80 lg:right-6 lg:rounded-xl lg:border"
       style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
     >
       <div className="flex flex-col gap-2 px-3 py-2 lg:flex-row lg:items-center lg:gap-4 lg:px-4 lg:py-2.5">
@@ -129,22 +131,31 @@ export default function MiniPlayer({
         </div>
 
         <div className="flex items-center gap-2 lg:flex-1">
-          <span className="w-9 text-right text-[11px] tabular-nums text-white/90">
+          <span className="w-9 text-right text-[11px] font-medium tabular-nums text-white/90">
             {formatTime(currentTime)}
           </span>
-          <input
-            type="range"
-            min={0}
-            max={duration || 0}
-            step={0.1}
-            value={Math.min(currentTime, duration || 0)}
-            onChange={(event) => onSeek(Number(event.target.value))}
-            disabled={!duration}
-            aria-label="Progreso del audio"
-            aria-valuetext={`${formatTime(currentTime)} de ${formatTime(duration)}`}
-            className="flex-1 h-1.5 cursor-pointer accent-white disabled:cursor-not-allowed"
-          />
-          <span className="w-9 text-[11px] tabular-nums text-white/90">
+
+          <div className="relative flex h-4 flex-1 items-center">
+            <div className="pointer-events-none absolute inset-x-0 top-1/2 h-1.5 -translate-y-1/2 rounded-full bg-white/40 ring-1 ring-inset ring-white/70" />
+            <div
+              className="pointer-events-none absolute left-0 top-1/2 h-1.5 -translate-y-1/2 rounded-full bg-white"
+              style={{ width: `${progress}%` }}
+            />
+            <input
+              type="range"
+              min={0}
+              max={duration || 0}
+              step={0.1}
+              value={Math.min(currentTime, duration || 0)}
+              onChange={(event) => onSeek(Number(event.target.value))}
+              disabled={!duration}
+              aria-label="Progreso del audio"
+              aria-valuetext={`${formatTime(currentTime)} de ${formatTime(duration)}`}
+              className="relative z-10 h-4 w-full cursor-pointer appearance-none bg-transparent disabled:cursor-not-allowed [&::-moz-range-thumb]:h-3.5 [&::-moz-range-thumb]:w-3.5 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:border-2 [&::-moz-range-thumb]:border-white [&::-moz-range-thumb]:bg-orange-600 [&::-moz-range-track]:h-4 [&::-moz-range-track]:bg-transparent [&::-webkit-slider-runnable-track]:h-4 [&::-webkit-slider-runnable-track]:bg-transparent [&::-webkit-slider-thumb]:h-3.5 [&::-webkit-slider-thumb]:w-3.5 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-white [&::-webkit-slider-thumb]:bg-orange-600"
+            />
+          </div>
+
+          <span className="w-9 text-[11px] font-medium tabular-nums text-white/90">
             {formatTime(duration)}
           </span>
         </div>
