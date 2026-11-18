@@ -7,7 +7,6 @@ import { useState } from "react";
 import PartiturasTab from "./components/PartiturasTab";
 import AdministracionTab from "./components/AdministracionTab";
 import { useUserData } from "../hooks/useUserData";
-import TamborScreen from "./components/TamborScreen";
 import { canAccess } from "@/lib/permissions";
 import { MODULES } from "@/lib/modules";
 import RecibosScreen from "./components/RecibosScreen";
@@ -176,19 +175,11 @@ export default function DashboardPage() {
 
 
           {selectedTab === "partituras" && (
-  <>
-    {userData.rol === "musico" &&
-    userData.instrumento === "tambor" &&
-    userData.email !== "ysimbrelo@gmail.com" ? (
-      <TamborScreen userData={userData} />
-    ) : (
-      <PartiturasTab
-        userData={userData}
-        favorites={favorites}
-        setFavorites={setFavorites}
-      />
-    )}
-  </>
+  <PartiturasTab
+    userData={userData}
+    favorites={favorites}
+    setFavorites={setFavorites}
+  />
 )}
 
           {selectedTab === "administracion" && (
