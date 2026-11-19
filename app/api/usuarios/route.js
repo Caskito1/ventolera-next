@@ -1,28 +1,21 @@
 export const runtime = "nodejs";
 
-export async function GET() {
+import { requireUser, requirePermission } from "@/lib/serverAuth";
 
-  const admin = (await import("firebase-admin")).default;
+export async function GET(req) {
 
-  if (!admin.apps.length) {
+  const auth = await requireUser(req);
+  if (auth.response) return auth.response;
 
-    const {
-      FIREBASE_PROJECT_ID,
-      FIREBASE_CLIENT_EMAIL,
-      FIREBASE_PRIVATE_KEY,
-    } = process.env;
+  const permission = await requirePermission(
+    auth.admin,
+    auth.uid,
+    "usuarios",
+    "admin"
+  );
+  if (permission.response) return permission.response;
 
-    admin.initializeApp({
-      credential: admin.credential.cert({
-        projectId: FIREBASE_PROJECT_ID,
-        clientEmail: FIREBASE_CLIENT_EMAIL,
-        privateKey: FIREBASE_PRIVATE_KEY?.replace(/\\n/g, "\n"),
-      }),
-    });
-
-  }
-
-  const db = admin.firestore();
+  const db = auth.admin.firestore();
 
   const snapshot = await db
     .collection("usuarios")

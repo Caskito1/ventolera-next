@@ -1,30 +1,23 @@
 export const runtime = "nodejs";
 
 import pdf from "pdf-parse";
+import { requireUser, requirePermission } from "@/lib/serverAuth";
 
 export async function POST(req) {
+  const auth = await requireUser(req);
+  if (auth.response) return auth.response;
+
+  const permission = await requirePermission(
+    auth.admin,
+    auth.uid,
+    "recibos",
+    "write"
+  );
+  if (permission.response) return permission.response;
+
   try {
 
-    /* 🔥 Lazy import firebase-admin */
-    const admin = (await import("firebase-admin")).default;
-
-    if (!admin.apps.length) {
-      const {
-        FIREBASE_PROJECT_ID,
-        FIREBASE_CLIENT_EMAIL,
-        FIREBASE_PRIVATE_KEY,
-      } = process.env;
-
-      admin.initializeApp({
-        credential: admin.credential.cert({
-          projectId: FIREBASE_PROJECT_ID,
-          clientEmail: FIREBASE_CLIENT_EMAIL,
-          privateKey: FIREBASE_PRIVATE_KEY?.replace(/\\n/g, "\n"),
-        }),
-      });
-    }
-
-    const db = admin.firestore();
+    const db = auth.admin.firestore();
 
     const formData = await req.formData();
     const file = formData.get("file");

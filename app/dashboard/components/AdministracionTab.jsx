@@ -172,7 +172,7 @@ const monthsByYear = myMonths.reduce((acc, month) => {
 
       const recibo = recibos.find(
         (r) =>
-          r.ci === userData.ci &&
+          r.userId === auth.currentUser.uid &&
           r.periodo === month.value
       );
 

@@ -4,6 +4,7 @@ import { google } from "googleapis";
 import { NextResponse } from "next/server";
 import { Readable } from "stream";
 import { slugify } from "@/lib/slug";
+import { requireUser, requirePermission } from "@/lib/serverAuth";
 
 /* ===============================
    📁 Carpetas por instrumento
@@ -22,27 +23,19 @@ const INSTRUMENT_FOLDERS = {
    🚀 POST
 ================================ */
 export async function POST(req) {
+  const auth = await requireUser(req);
+  if (auth.response) return auth.response;
+
+  const permission = await requirePermission(
+    auth.admin,
+    auth.uid,
+    "partituras",
+    "write"
+  );
+  if (permission.response) return permission.response;
+
   try {
-    /* 🔥 Lazy import firebase-admin */
-    const admin = (await import("firebase-admin")).default;
-
-    if (!admin.apps.length) {
-      const {
-        FIREBASE_PROJECT_ID,
-        FIREBASE_CLIENT_EMAIL,
-        FIREBASE_PRIVATE_KEY,
-      } = process.env;
-
-      admin.initializeApp({
-        credential: admin.credential.cert({
-          projectId: FIREBASE_PROJECT_ID,
-          clientEmail: FIREBASE_CLIENT_EMAIL,
-          privateKey: FIREBASE_PRIVATE_KEY?.replace(/\\n/g, "\n"),
-        }),
-      });
-    }
-
-    const db = admin.firestore();
+    const db = auth.admin.firestore();
 
     const formData = await req.formData();
 

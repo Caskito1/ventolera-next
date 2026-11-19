@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { auth } from "@/firebase";
 
 export default function UploadMasivoTab({ onClose, onUploaded }) {
 
@@ -76,8 +77,11 @@ useEffect(() => {
       const formData = new FormData();
       formData.append("file", file);
 
+      const token = await auth.currentUser?.getIdToken();
+
       const res = await fetch("/api/preview-recibo", {
         method: "POST",
+        headers: { Authorization: `Bearer ${token}` },
         body: formData
       });
 
@@ -203,10 +207,13 @@ const handleUpload = async () => {
         continue;
       }
 
+      const token = await auth.currentUser?.getIdToken();
+
       const check = await fetch("/api/check-recibo",{
         method:"POST",
         headers:{
-          "Content-Type":"application/json"
+          "Content-Type":"application/json",
+          "Authorization": `Bearer ${token}`
         },
         body: JSON.stringify({
           uid: item.uid,
@@ -261,8 +268,11 @@ const handleUpload = async () => {
       formData.append("periodo", periodo);
       formData.append("overwrite", overwrite);
 
+      const token = await auth.currentUser?.getIdToken();
+
       await fetch("/api/upload-recibo", {
         method: "POST",
+        headers: { Authorization: `Bearer ${token}` },
         body: formData,
       });
 

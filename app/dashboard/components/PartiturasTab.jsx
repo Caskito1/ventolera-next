@@ -36,8 +36,12 @@ export default function PartiturasTab({ userData, favorites, setFavorites }) {
     try {
       setDownloadingId(fileId);
 
+      const token = await auth.currentUser?.getIdToken();
+      if (!token) return;
+
       const response = await fetch(
         `/api/downloadpdf?fileId=${fileId}&download=1`,
+        { headers: { Authorization: `Bearer ${token}` } }
       );
 
       const blob = await response.blob();

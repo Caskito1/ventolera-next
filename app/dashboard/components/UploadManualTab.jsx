@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { auth } from "@/firebase";
 
 export default function UploadManualTab({ user, month, onClose, onUploaded }) {
 
@@ -40,10 +41,13 @@ export default function UploadManualTab({ user, month, onClose, onUploaded }) {
 
     if(!file) return;
 
+    const token = await auth.currentUser?.getIdToken();
+
     const check = await fetch("/api/check-recibo",{
       method:"POST",
       headers:{
-        "Content-Type":"application/json"
+        "Content-Type":"application/json",
+        "Authorization": `Bearer ${token}`
       },
       body:JSON.stringify({
         uid:user.uid,
@@ -75,8 +79,11 @@ export default function UploadManualTab({ user, month, onClose, onUploaded }) {
     formData.append("folderId",user.folderRecibosId);
     formData.append("overwrite",overwrite);
 
+    const token = await auth.currentUser?.getIdToken();
+
     await fetch("/api/upload-recibo",{
       method:"POST",
+      headers:{ "Authorization": `Bearer ${token}` },
       body:formData
     });
     onUploaded();

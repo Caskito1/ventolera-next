@@ -1,35 +1,22 @@
 export const runtime = "nodejs";
 
-export async function GET() {
+import { requireUser, requirePermission } from "@/lib/serverAuth";
 
-  const admin = (await import("firebase-admin")).default;
+export async function GET(req) {
 
-  if (!admin.apps.length) {
+  const auth = await requireUser(req);
+  if (auth.response) return auth.response;
 
-    const {
-      FIREBASE_PROJECT_ID,
-      FIREBASE_CLIENT_EMAIL,
-      FIREBASE_PRIVATE_KEY
-    } = process.env;
+  const permission = await requirePermission(
+    auth.admin,
+    auth.uid,
+    "recibos",
+    "read"
+  );
+  if (permission.response) return permission.response;
 
-    admin.initializeApp({
-      credential: admin.credential.cert({
-        projectId: FIREBASE_PROJECT_ID,
-        clientEmail: FIREBASE_CLIENT_EMAIL,
-        privateKey: FIREBASE_PRIVATE_KEY?.replace(/\\n/g,"\n")
-      })
-    });
-
-  }
-
-  const db = admin.firestore();
-
-  const usersSnap = await db.collection("usuarios").get();
-
-  const users = usersSnap.docs.map(doc => ({
-    uid: doc.id,
-    ...doc.data()
-  }));
+  const canManage = ["write", "admin"].includes(permission.permission);
+  const db = auth.admin.firestore();
 
   const months = generateMonths();
 
@@ -41,7 +28,19 @@ export async function GET() {
     .map(doc => doc.data())
     .filter(r =>
       months.some(m => m.value === r.periodo)
-    );
+    )
+    .filter(r => canManage || r.userId === auth.uid);
+
+  let users = [];
+
+  if (canManage) {
+    const usersSnap = await db.collection("usuarios").get();
+
+    users = usersSnap.docs.map(doc => ({
+      uid: doc.id,
+      ...doc.data()
+    }));
+  }
 
   return Response.json({
     users,

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { auth } from "@/firebase";
 
 export default function UploadPartituraModal({  
   onClose,
@@ -116,8 +117,11 @@ const handleSubmit = async () => {
       formData.append("tema", tema);
       formData.append("instrumento", inst);
 
+      const token = await auth.currentUser?.getIdToken();
+
       const res = await fetch("/api/upload", {
         method: "POST",
+        headers: { Authorization: `Bearer ${token}` },
         body: formData,
       });
 
