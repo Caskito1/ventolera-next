@@ -184,9 +184,26 @@ export default function TemaRow({
             ))}
 
           {partituras.length === 0 && (
-            <span className="text-xs text-gray-400">
-              Sin partituras para tu instrumento
-            </span>
+            <>
+              <span
+                className="sm:hidden shrink-0 text-gray-400"
+                title="Sin partituras para tu instrumento"
+              >
+                <img
+                  src="/media/icons/block.webp"
+                  alt="Sin partituras"
+                  height={16}
+                  width={16}
+                  className="opacity-60"
+                />
+              </span>
+              <span
+                className="hidden sm:inline text-xs text-gray-400 shrink-0"
+                title="Sin partituras para tu instrumento"
+              >
+                Sin partituras
+              </span>
+            </>
           )}
 
           {multiple && (
